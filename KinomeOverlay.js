@@ -145,7 +145,9 @@ KO.inputFileHandler = function(evt) {
         })
         .attr("y", function(d) {
             return parseFloat(KO.getCoordY(d.GeneID));
-        });
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "10px");
 
     KO.TooltipGrp = KO.svg.append("g")
         .attr("visibility", "hidden");
