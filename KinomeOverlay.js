@@ -41,6 +41,9 @@ d3.json("kotable.json", function(json) {
         .style("stroke", 1);
 });
 
+// Plotted node label group
+KO.LabelGrp = KO.svg.append("g");
+
 /* return x-coord given input geneid string
  */
 KO.getCoordX = function(geneid_in) {
@@ -59,6 +62,15 @@ KO.getCoordY = function(geneid_in) {
             return parseInt(KO.coords[i].ycoord) * KO.scale;
     }
     return null;    // geneID not found
+};
+
+/* return HGNC Name of the GeneID */
+KO.getHGNC = function(gene_id) {
+    for (i = 0; i < KO.coords.length; i++) {
+        if (KO.coords[i].GeneID == gene_id)
+            return KO.coords[i].HGNCSymbol;
+    }
+    return null;    // match not found
 };
 
 KO.reader = new FileReader();
@@ -120,16 +132,24 @@ KO.inputFileHandler = function(evt) {
                 return 7 * (2.5 ^ Math.abs(parseFloat(d.intensityVal)));
             });
 
+    // Add labels
+    KO.LabelGrp.selectAll("text")
+        .data(csvfile)
+        .enter()
+        .append("text")
+        .text(function(d) {
+            return KO.getHGNC(d.GeneID);
+        })
+        .attr("x", function(d) {
+            return parseFloat(KO.getCoordX(d.GeneID)) + 15;
+        })
+        .attr("y", function(d) {
+            return parseFloat(KO.getCoordY(d.GeneID));
+        });
+
     KO.TooltipGrp = KO.svg.append("g")
         .attr("visibility", "hidden");
-/*  remove tooltip palette?
-    KO.Tooltip = KO.TooltipGrp.append("rect")
-    .attr("width", 100)
-    .attr("height", 100)
-    .style("fill", "white")
-    .style("fill-opacity", .9)
-    .style("stroke", 2);
-*/
+
     KO.TooltipText = KO.TooltipGrp.append("text")
     .text("Testing tooltip")
     .attr("fill", "black")
