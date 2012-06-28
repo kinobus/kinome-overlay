@@ -2,7 +2,6 @@ var KO= {};     // KO-global scope
 
 KO.div = d3.select("body").append("div")
     .attr("id", "KOdiv")
-    //.attr("width", 825)
     .attr("height", 975);
 
 KO.opac = 0.55;      // fill-opacity of scatterplot points
@@ -18,6 +17,13 @@ KO.scale = 0.25;    // scaling factor of image (vs original 3300x4956 jpg
 
 KO.coords = [];     // closure
 KO.points = {};
+
+KO.ExportImg = d3.select("#export").on("mousedown", function() {
+    alert("Sorry, this feature is not yet available.");
+});     // Export image
+
+// Sliders for manipulating radius differentiation
+KO.Slider = [ d3.select("#slider0"), d3.select("#slider1") ];
 
 /* populate KO.coords table
  * import coords.json file */

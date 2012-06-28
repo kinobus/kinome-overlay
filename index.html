@@ -6,12 +6,15 @@
 
     <body>
         <!--div id="KOdiv" style="background-image: url(kinometree_825x1239.jpg); width: 825px; height: 1239px;"></div-->
-        <table border="0">
-            <tr><td><input type="file" id="KOfiles" name="KOfiles[]" multiple></input>
+        <table border="0" id="ctrl_table">
+            <tr><td id="ctrl_upload"><input type="file" id="KOfiles" name="KOfiles[]" multiple></input>
                     <output id="list"></output>
                 </td>
                 <td><a href="demo.csv">demo.csv</a></td>
             </tr>
+            <tr><td><input id="export" type="button" value="Export Image"></td></tr>
+            <tr><td id="slider_cell0"><input id="slider0" type="range" min="-10" max="10"><div id="slider_text0"></div></td>
+                <td id="slider_cell1"><input id="slider1" type="range" min="-10" max="10"><div id="slider_text1"></div></td></td></tr>
         </table>
         <script src="KinomeOverlay.js"></script>
     </body>
