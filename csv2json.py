@@ -42,7 +42,7 @@ except:
     exit()
 csv_f = csv_f.readlines()
 header = csv_f.pop(0).split(',')    # set headers
-json_f.write('KO.coords = [\n')       # write object name
+json_f.write('[\n')       # write object name
 
 for line in csv_f:
     # r/w
@@ -52,4 +52,4 @@ for line in csv_f:
         json_f.write('"' + header[c].strip() + '": "' + i.strip() + '", ')
         c+=1
     json_f.write("},\n")
-json_f.write('\n];')
+json_f.write('\n]')
