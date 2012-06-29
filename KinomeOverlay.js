@@ -23,7 +23,7 @@ KO.ExportImg = d3.select("#export").on("mousedown", function() {
 });     // Export image
 
 // Sliders for manipulating radius differentiation
-KO.Slider = [ d3.select("#slider0"), d3.select("#slider1") ];
+KO.Slider = []; // Closure
 
 /* populate KO.coords table
  * import coords.json file */
@@ -43,6 +43,8 @@ d3.json("kotable.json", function(json) {
 
 // Plotted node label group
 KO.LabelGrp = KO.svg.append("g");
+
+/* METHODS */
 
 /* return x-coord given input geneid string
  */
@@ -73,7 +75,15 @@ KO.getHGNC = function(gene_id) {
     return null;    // match not found
 };
 
+/* Set radius of intensity value plot */
+KO.getRadius = function(d) {
+
+    return (5 + KO.Slider[0]) * ((2.5 + KO.Slider[1]) ^ Math.abs(parseFloat(d.intensityVal)));
+
+};
+
 KO.reader = new FileReader();
+
 KO.iValPtGrp = [];
 
 /* on file upload */
@@ -81,7 +91,8 @@ KO.inputFileHandler = function(evt) {
 
     //var files = evt.target.files;   // FileList obj
     var files = document.getElementById("KOfiles").files;
-
+    KO.Slider = [ parseFloat(document.getElementById("slider0").value), parseFloat(document.getElementById("slider1").value) ];
+    //
     // closure, needed to read in file
     KO.reader.onload = function(e) {
         // Parse csv file
@@ -96,11 +107,7 @@ KO.inputFileHandler = function(evt) {
             .on("mouseover", function(d) {
                 d3.select(this).style("fill-opacity", .8);
                 KO.TooltipGrp.attr("visibility", "visible");
-                // KO.Tooltip.attr("x", event.pageX + 20)
-                // .attr("y", event.pageY - 10);
                 KO.TooltipText
-                // .attr("x", event.pageX + 30)
-                // .attr("y", event.pageY - 20)
                 .attr("x", parseFloat(KO.getCoordX(d.GeneID)) + 20)
                 .attr("y", parseFloat(KO.getCoordY(d.GeneID)))
                 .text(function() {
@@ -121,15 +128,13 @@ KO.inputFileHandler = function(evt) {
             })
             .style("fill-opacity", KO.opac)
             .attr("cx", function(d) {
-                //console.log(KO.getCoordX([d.geneID]));
                 return KO.getCoordX(d.GeneID);
             })
             .attr("cy", function(d) {
-                //console.log(KO.getCoordY([d.geneID]));
                 return KO.getCoordY(d.GeneID);
             })
             .attr("r", function(d) {
-                return 7 * (2.5 ^ Math.abs(parseFloat(d.intensityVal)));
+                return KO.getRadius(d);
             });
 
     // Add labels
