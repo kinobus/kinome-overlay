@@ -23,7 +23,11 @@ KO.ExportImg = d3.select("#export").on("mousedown", function() {
 });     // Export image
 
 // Sliders for manipulating radius differentiation
-KO.Slider = []; // Closure
+KO.Slider = [
+    document.getElementById("slider0"),
+    document.getElementById("slider1")
+];
+
 
 /* populate KO.coords table
  * import coords.json file */
@@ -77,9 +81,7 @@ KO.getHGNC = function(gene_id) {
 
 /* Set radius of intensity value plot */
 KO.getRadius = function(d) {
-
-    return (5 + KO.Slider[0]) * ((2.5 + KO.Slider[1]) ^ Math.abs(parseFloat(d.intensityVal)));
-
+    return (5 + parseFloat(KO.Slider[0].value)) * ((2.5 + parseFloat(KO.Slider[1].value)) ^ Math.abs(parseFloat(d.intensityVal)));
 };
 
 KO.reader = new FileReader();
@@ -91,8 +93,7 @@ KO.inputFileHandler = function(evt) {
 
     //var files = evt.target.files;   // FileList obj
     var files = document.getElementById("KOfiles").files;
-    KO.Slider = [ parseFloat(document.getElementById("slider0").value), parseFloat(document.getElementById("slider1").value) ];
-    //
+    //KO.Slider = [ document.getElementById("slider0"), document.getElementById("slider1") ];
     // closure, needed to read in file
     KO.reader.onload = function(e) {
         // Parse csv file
