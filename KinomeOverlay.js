@@ -86,7 +86,8 @@ KO.getRadius = function(d) {
 
 KO.reader = new FileReader();
 
-KO.iValPtGrp = [];
+/* intensity value node grp */
+KO.iValPtGrp = {};      // closure
 
 /* on file upload */
 KO.inputFileHandler = function(evt) {
@@ -98,10 +99,10 @@ KO.inputFileHandler = function(evt) {
     KO.reader.onload = function(e) {
         // Parse csv file
         var csvfile = d3.csv.parse(KO.reader.result);
-        KO.iValPtGrp.push(KO.svg
+        KO.iValPtGrp = KO.svg
                 .append("g")
-                .attr("id", KO.iValPtGrp.length));
-        KO.iValPtGrp[KO.iValPtGrp.length - 1].selectAll("circle")
+                .attr("id", "iValPtGrp");
+        KO.iValPtGrp.selectAll("circle")
             .data(csvfile)
             .enter()
             .append("circle")
