@@ -28,7 +28,6 @@ KO.Slider = [
     document.getElementById("slider1")
 ];
 
-
 /* populate KO.coords table
  * import coords.json file */
 d3.json("kotable.json", function(json) {
@@ -89,6 +88,9 @@ KO.reader = new FileReader();
 /* intensity value node grp */
 KO.iValPtGrp = {};      // closure
 
+/* intensity value (GeneID, iVal) pairs from csvfile */
+KO.inputVals = [];      // closure
+
 /* on file upload */
 KO.inputFileHandler = function(evt) {
 
@@ -98,12 +100,12 @@ KO.inputFileHandler = function(evt) {
     // closure, needed to read in file
     KO.reader.onload = function(e) {
         // Parse csv file
-        var csvfile = d3.csv.parse(KO.reader.result);
+        KO.inputVals = d3.csv.parse(KO.reader.result);
         KO.iValPtGrp = KO.svg
                 .append("g")
                 .attr("id", "iValPtGrp");
         KO.iValPtGrp.selectAll("circle")
-            .data(csvfile)
+            .data(KO.inputVals)
             .enter()
             .append("circle")
             .on("mouseover", function(d) {
@@ -120,6 +122,7 @@ KO.inputFileHandler = function(evt) {
                 KO.TooltipGrp.attr("visibility", "hidden");
             })
             .attr("id", function(d) { return d.GeneID; })
+            .attr("class", "iValPlot")
             .style("fill", function(d) {
                 if (parseFloat(d.intensityVal) < 0) {
                     return "red";
@@ -139,22 +142,22 @@ KO.inputFileHandler = function(evt) {
                 return KO.getRadius(d);
             });
 
-    // Add labels
-    KO.LabelGrp.selectAll("text")
-        .data(csvfile)
-        .enter()
-        .append("text")
-        .text(function(d) {
-            return KO.getHGNC(d.GeneID);
-        })
-        .attr("x", function(d) {
-            return parseFloat(KO.getCoordX(d.GeneID)) + 15;
-        })
-        .attr("y", function(d) {
-            return parseFloat(KO.getCoordY(d.GeneID));
-        })
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "10px");
+        // Add labels
+        KO.LabelGrp.selectAll("text")
+            .data(KO.inputVals)
+            .enter()
+            .append("text")
+            .text(function(d) {
+                return KO.getHGNC(d.GeneID);
+            })
+            .attr("x", function(d) {
+                return parseFloat(KO.getCoordX(d.GeneID)) + 15;
+            })
+            .attr("y", function(d) {
+                return parseFloat(KO.getCoordY(d.GeneID));
+            })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "10px");
 
     KO.TooltipGrp = KO.svg.append("g")
         .attr("visibility", "hidden");
@@ -168,6 +171,18 @@ KO.inputFileHandler = function(evt) {
     };
 
     KO.reader.readAsText(files[0]);
+
+    /* Allow slider to change iVal radii to be changed live */
+    KO.Slider[0].addEventListener("change", function() {
+        var plots = d3.selectAll(".iValPlot")
+            .attr("r", function () {
+                return parseFloat(d3.select(this).attr("r")) + parseFloat(KO.Slider[0].value) * 5;
+            });
+        //for (i = 0; i < KO.inputVals.length; i++) {
+        //    //d3.select("#" + KO.inputVals[i].GeneID).attr("r", KO.getRadius(KO.inputVals[i]));
+        //    d3.select("#" + KO.inputVals[i].GeneID).attr("r", 50);
+        //}
+    }, false);
 
 };
 document.getElementById("KOfiles").addEventListener("change", KO.inputFileHandler, false);
