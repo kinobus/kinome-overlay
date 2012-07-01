@@ -80,7 +80,27 @@ KO.getHGNC = function(gene_id) {
 
 /* Set radius of intensity value plot */
 KO.getRadius = function(d) {
-    return (5 + parseFloat(KO.Slider[0].value)) * ((2.5 + parseFloat(KO.Slider[1].value)) ^ Math.abs(parseFloat(d.intensityVal)));
+    if (d.intensityVal) {
+        //return parseFloat(KO.Slider[0].value) * (5  ^ (parseFloat(KO.Slider[1].value) * Math.abs(parseFloat(d.intensityVal))));
+        return parseFloat(KO.Slider[0].value) * ((parseFloat(KO.Slider[1].value)  ^  Math.abs(parseFloat(d.intensityVal))));
+    }
+    else {
+        //return parseFloat(KO.Slider[0].value) * (5  ^ (parseFloat(KO.Slider[1].value) * Math.abs(parseFloat(d))));
+        return parseFloat(KO.Slider[0].value) * ((parseFloat(KO.Slider[1].value)  ^  Math.abs(parseFloat(d))));
+    }
+};
+
+/* intensity value (GeneID, iVal) pairs from csvfile */
+KO.inputVals = [];      // closure
+
+/* Return intensityVal of specified GeneID */
+KO.getIntVal = function (geneid_in) {
+    for (i = 0; i < KO.inputVals.length; i++) {
+        if (KO.inputVals[i].GeneID == geneid_in) {
+            return KO.inputVals[i].intensityVal;
+        }
+    }
+    return null;
 };
 
 KO.reader = new FileReader();
@@ -88,15 +108,11 @@ KO.reader = new FileReader();
 /* intensity value node grp */
 KO.iValPtGrp = {};      // closure
 
-/* intensity value (GeneID, iVal) pairs from csvfile */
-KO.inputVals = [];      // closure
-
 /* on file upload */
 KO.inputFileHandler = function(evt) {
 
     //var files = evt.target.files;   // FileList obj
     var files = document.getElementById("KOfiles").files;
-    //KO.Slider = [ document.getElementById("slider0"), document.getElementById("slider1") ];
     // closure, needed to read in file
     KO.reader.onload = function(e) {
         // Parse csv file
@@ -176,12 +192,16 @@ KO.inputFileHandler = function(evt) {
     KO.Slider[0].addEventListener("change", function() {
         var plots = d3.selectAll(".iValPlot")
             .attr("r", function () {
-                return parseFloat(d3.select(this).attr("r")) + parseFloat(KO.Slider[0].value) * 5;
+                return KO.getRadius(parseFloat(KO.getIntVal(d3.select(this).attr("id"))));
             });
-        //for (i = 0; i < KO.inputVals.length; i++) {
-        //    //d3.select("#" + KO.inputVals[i].GeneID).attr("r", KO.getRadius(KO.inputVals[i]));
-        //    d3.select("#" + KO.inputVals[i].GeneID).attr("r", 50);
-        //}
+    }, false);
+
+    /* Allow slider to change iVal radii to be changed live */
+    KO.Slider[1].addEventListener("change", function() {
+        var plots = d3.selectAll(".iValPlot")
+            .attr("r", function () {
+                return KO.getRadius(parseFloat(KO.getIntVal(d3.select(this).attr("id"))));
+            });
     }, false);
 
 };
