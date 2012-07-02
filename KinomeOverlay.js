@@ -25,6 +25,7 @@ KO.AmpClr = document.getElementById("amp_clr");
 KO.coords = [];     // closure
 KO.points = {};
 
+/* Export image using "canvg" */
 KO.ExportImg = d3.select("#export").on("mousedown", function() {
     alert("Sorry, this feature is not yet available.");
 });     // Export image
@@ -52,7 +53,7 @@ d3.json("kotable.json", function(json) {
 });
 
 // Plotted node label group
-KO.LabelGrp = KO.svg.append("g");
+KO.LabelGrp = null;
 
 /* METHODS */
 
@@ -88,11 +89,9 @@ KO.getHGNC = function(gene_id) {
 /* Set radius of intensity value plot */
 KO.getRadius = function(d) {
     if (d.intensityVal) {
-        //return parseFloat(KO.Slider[0].value) * (5  ^ (parseFloat(KO.Slider[1].value) * Math.abs(parseFloat(d.intensityVal))));
         return parseFloat(KO.Slider[0].value) * ((parseFloat(KO.Slider[1].value)  ^  Math.abs(parseFloat(d.intensityVal))));
     }
     else {
-        //return parseFloat(KO.Slider[0].value) * (5  ^ (parseFloat(KO.Slider[1].value) * Math.abs(parseFloat(d))));
         return parseFloat(KO.Slider[0].value) * ((parseFloat(KO.Slider[1].value)  ^  Math.abs(parseFloat(d))));
     }
 };
@@ -110,6 +109,7 @@ KO.getIntVal = function (geneid_in) {
     return null;
 };
 
+/* file upload reader type */
 KO.reader = new FileReader();
 
 /* intensity value node grp */
@@ -148,11 +148,9 @@ KO.inputFileHandler = function(evt) {
             .attr("class", "iValPlot")
             .style("fill", function(d) {
                 if (parseFloat(d.intensityVal) < 0) {
-                    //return KO.colors[document.getElementById("inh_clr").selectedIndex];
                     return KO.colors[KO.InhClr.selectedIndex];
                 }
                 else {
-                    //return KO.colors[document.getElementById("amp_clr").selectedIndex];
                     return KO.colors[KO.AmpClr.selectedIndex];
                 }
             })
@@ -167,7 +165,8 @@ KO.inputFileHandler = function(evt) {
                 return KO.getRadius(d);
             });
 
-        // Add labels
+        // Add labels to plotted nodes
+        KO.LabelGrp = KO.svg.append("g");
         KO.LabelGrp.selectAll("text")
             .data(KO.inputVals)
             .enter()
@@ -181,11 +180,12 @@ KO.inputFileHandler = function(evt) {
             .attr("y", function(d) {
                 return parseFloat(KO.getCoordY(d.GeneID));
             })
+            .attr("class", "label")
             .style("fill", "white")
             .style("stroke", "black")
             .style("stroke-width", ".5px")
             .attr("font-family", "sans-serif")
-            .attr("font-size", "24px");
+            .attr("font-size", "18px");
 
     KO.TooltipGrp = KO.svg.append("g")
         .attr("visibility", "hidden");
@@ -200,7 +200,7 @@ KO.inputFileHandler = function(evt) {
 
     KO.reader.readAsText(files[0]);
 
-    /* Allow slider to change iVal radii to be changed live */
+    /* Allow left slider to change iVal radii to be changed live */
     KO.Slider[0].addEventListener("change", function() {
         var plots = d3.selectAll(".iValPlot")
             .attr("r", function () {
@@ -208,7 +208,7 @@ KO.inputFileHandler = function(evt) {
             });
     }, false);
 
-    /* Allow slider to change iVal radii to be changed live */
+    /* Allow right slider to change iVal radii to be changed live */
     KO.Slider[1].addEventListener("change", function() {
         var plots = d3.selectAll(".iValPlot")
             .attr("r", function () {
@@ -216,7 +216,7 @@ KO.inputFileHandler = function(evt) {
             });
     }, false);
 
-    /* On color change */
+    /* On inhibitor color change */
     KO.InhClr.addEventListener("change", function() {
         var plots = d3.selectAll(".iValPlot")
             .style("fill", function () {
@@ -229,7 +229,7 @@ KO.inputFileHandler = function(evt) {
             });
     }, false);
 
-    /* On color change */
+    /* On activator color change */
     KO.AmpClr.addEventListener("change", function() {
         var plots = d3.selectAll(".iValPlot")
             .style("fill", function () {
