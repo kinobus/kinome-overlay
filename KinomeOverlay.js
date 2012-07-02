@@ -1,5 +1,7 @@
 var KO= {};     // KO-global scope
 
+pF = parseFloat;
+
 KO.div = d3.select("body").append("div")
     .attr("id", "KOdiv")
     .attr("height", 975);
@@ -48,8 +50,8 @@ d3.json("kotable.json", function(json) {
         .data(KO.coords)
         .enter()
         .append("circle")
-        .attr("cx", function(d) { return parseFloat(d.xcoord) * KO.scale; })
-        .attr("cy", function(d) { return parseFloat(d.ycoord) * KO.scale; })
+        .attr("cx", function(d) { return pF(d.xcoord) * KO.scale; })
+        .attr("cy", function(d) { return pF(d.ycoord) * KO.scale; })
         .attr("r", 2)
         .style("fill", "white")
         .style("stroke", 1);
@@ -91,12 +93,14 @@ KO.getHGNC = function(gene_id) {
 
 /* Set radius of intensity value plot */
 KO.getRadius = function(d) {
+    var intVal = null;
     if (d.intensityVal) {
-        return parseFloat(KO.Slider[0].value) * ((parseFloat(KO.Slider[1].value)  ^  Math.abs(parseFloat(d.intensityVal))));
+        intVal = d.intensityVal;
     }
     else {
-        return parseFloat(KO.Slider[0].value) * ((parseFloat(KO.Slider[1].value)  ^  Math.abs(parseFloat(d))));
+        intVal = d;
     }
+    return (pF(KO.Slider[0].value) * Math.abs(pF(intVal))) + pF(KO.Slider[1].value);
 };
 
 /* intensity value (GeneID, iVal) pairs from csvfile */
@@ -138,8 +142,8 @@ KO.inputFileHandler = function(evt) {
                 d3.select(this).style("fill-opacity", .8);
                 KO.TooltipGrp.attr("visibility", "visible");
                 KO.TooltipText
-                .attr("x", parseFloat(KO.getCoordX(d.GeneID)) + 20)
-                .attr("y", parseFloat(KO.getCoordY(d.GeneID)))
+                .attr("x", pF(KO.getCoordX(d.GeneID)) + 20)
+                .attr("y", pF(KO.getCoordY(d.GeneID)))
                 .text(function() {
                     return "Intensity: " + d.intensityVal; });
             })
@@ -150,7 +154,7 @@ KO.inputFileHandler = function(evt) {
             .attr("id", function(d) { return d.GeneID; })
             .attr("class", "iValPlot")
             .style("fill", function(d) {
-                if (parseFloat(d.intensityVal) < 0) {
+                if (pF(d.intensityVal) < 0) {
                     return KO.colors[KO.InhClr.selectedIndex];
                 }
                 else {
@@ -186,10 +190,10 @@ KO.inputFileHandler = function(evt) {
                 return KO.getHGNC(d.GeneID);
             })
             .attr("x", function(d) {
-                return parseFloat(KO.getCoordX(d.GeneID)) + 15;
+                return pF(KO.getCoordX(d.GeneID)) + 15;
             })
             .attr("y", function(d) {
-                return parseFloat(KO.getCoordY(d.GeneID));
+                return pF(KO.getCoordY(d.GeneID));
             })
             .attr("class", "label")
             .style("fill", "white")
@@ -215,7 +219,7 @@ KO.inputFileHandler = function(evt) {
     KO.Slider[0].addEventListener("change", function() {
         var plots = d3.selectAll(".iValPlot")
             .attr("r", function () {
-                return KO.getRadius(parseFloat(KO.getIntVal(d3.select(this).attr("id"))));
+                return KO.getRadius(pF(KO.getIntVal(d3.select(this).attr("id"))));
             });
     }, false);
 
@@ -223,7 +227,7 @@ KO.inputFileHandler = function(evt) {
     KO.Slider[1].addEventListener("change", function() {
         var plots = d3.selectAll(".iValPlot")
             .attr("r", function () {
-                return KO.getRadius(parseFloat(KO.getIntVal(d3.select(this).attr("id"))));
+                return KO.getRadius(pF(KO.getIntVal(d3.select(this).attr("id"))));
             });
     }, false);
 
