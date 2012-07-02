@@ -25,6 +25,9 @@ KO.AmpClr = document.getElementById("amp_clr");
 KO.coords = [];     // closure
 KO.points = {};
 
+// Label checkbox
+KO.LabelCheck = document.getElementById("label_toggle");
+
 /* Export image using "canvg" */
 KO.ExportImg = d3.select("#export").on("mousedown", function() {
     alert("Sorry, this feature is not yet available.");
@@ -166,7 +169,15 @@ KO.inputFileHandler = function(evt) {
             });
 
         // Add labels to plotted nodes
-        KO.LabelGrp = KO.svg.append("g");
+        KO.LabelGrp = KO.svg.append("g")
+            .attr("visibility", function() {
+                if (KO.LabelCheck.checked == true) {
+                    return "visible";
+                }
+                else {
+                    return "hidden";
+                }
+            });
         KO.LabelGrp.selectAll("text")
             .data(KO.inputVals)
             .enter()
@@ -240,6 +251,16 @@ KO.inputFileHandler = function(evt) {
                     return d3.select(this).style("fill");
                 }
             });
+    }, false);
+
+    /* Show Label checkbox */
+    KO.LabelCheck.addEventListener("change", function() {
+        if (KO.LabelCheck.checked == true) {
+            KO.LabelGrp.attr("visibility", "visible");
+        }
+        else {
+            KO.LabelGrp.attr("visibility", "hidden");
+        }
     }, false);
 
 };
