@@ -15,6 +15,13 @@ KO.svg = KO.div     // main svg element
 
 KO.scale = 0.25;    // scaling factor of image (vs original 3300x4956 jpg
 
+KO.colors = [ "red", "orange", "blue", "yellow",
+    "green", "purple", "brown", "gray" ];
+
+// Color selectors
+KO.InhClr = document.getElementById("inh_clr");
+KO.AmpClr = document.getElementById("amp_clr");
+
 KO.coords = [];     // closure
 KO.points = {};
 
@@ -141,10 +148,12 @@ KO.inputFileHandler = function(evt) {
             .attr("class", "iValPlot")
             .style("fill", function(d) {
                 if (parseFloat(d.intensityVal) < 0) {
-                    return "red";
+                    //return KO.colors[document.getElementById("inh_clr").selectedIndex];
+                    return KO.colors[KO.InhClr.selectedIndex];
                 }
                 else {
-                    return "green";
+                    //return KO.colors[document.getElementById("amp_clr").selectedIndex];
+                    return KO.colors[KO.AmpClr.selectedIndex];
                 }
             })
             .style("fill-opacity", KO.opac)
@@ -172,8 +181,11 @@ KO.inputFileHandler = function(evt) {
             .attr("y", function(d) {
                 return parseFloat(KO.getCoordY(d.GeneID));
             })
+            .style("fill", "white")
+            .style("stroke", "black")
+            .style("stroke-width", ".5px")
             .attr("font-family", "sans-serif")
-            .attr("font-size", "10px");
+            .attr("font-size", "24px");
 
     KO.TooltipGrp = KO.svg.append("g")
         .attr("visibility", "hidden");
@@ -201,6 +213,32 @@ KO.inputFileHandler = function(evt) {
         var plots = d3.selectAll(".iValPlot")
             .attr("r", function () {
                 return KO.getRadius(parseFloat(KO.getIntVal(d3.select(this).attr("id"))));
+            });
+    }, false);
+
+    /* On color change */
+    KO.InhClr.addEventListener("change", function() {
+        var plots = d3.selectAll(".iValPlot")
+            .style("fill", function () {
+                if (KO.getIntVal(d3.select(this).attr("id")) < 0) {
+                    return KO.colors[KO.InhClr.selectedIndex];
+                }
+                else {
+                    return d3.select(this).style("fill");
+                }
+            });
+    }, false);
+
+    /* On color change */
+    KO.AmpClr.addEventListener("change", function() {
+        var plots = d3.selectAll(".iValPlot")
+            .style("fill", function () {
+                if (KO.getIntVal(d3.select(this).attr("id")) > 0) {
+                    return KO.colors[KO.AmpClr.selectedIndex];
+                }
+                else {
+                    return d3.select(this).style("fill");
+                }
             });
     }, false);
 

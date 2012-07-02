@@ -1,21 +1,55 @@
 <html>
-    <head>
-        <title>KinomeOverlay</title>
-        <script src="d3.v2.js"></script>
-    </head>
 
-    <body>
-        <!--div id="KOdiv" style="background-image: url(kinometree_825x1239.jpg); width: 825px; height: 1239px;"></div-->
-        <table border="0" id="ctrl_table">
-            <tr><td id="ctrl_upload"><input type="file" id="KOfiles" name="KOfiles" accept="text/csv"></input>
-                    <output id="list"></output>
-                </td>
-                <td><a href="demo.csv">demo.csv</a></td>
-            </tr>
-            <tr><td><input id="export" type="button" value="Export Image"></td></tr>
-            <tr><td id="slider_cell0"><input id="slider0" type="range" min="0" max="10" value="1" step="1"></input><div id="slider_text0"></div></td>
-                <td id="slider_cell1"><input id="slider1" type="range" min="0" max="10" value="1" step="1"></input><div id="slider_text1"></div></td></td></tr>
-        </table>
-        <script src="KinomeOverlay.js"></script>
-    </body>
+<head>
+    <title>KinomeOverlay</title>
+    <script src="d3.v2.js"></script>
+</head>
+
+<body>
+
+    <table border="0" id="ctrl_table">
+        <tr>
+            <td><a href="demo.csv">demo.csv</a></td>
+            <td id="ctrl_upload"><input type="file" id="KOfiles" name="KOfiles" accept="text/csv"></input></td>
+        </tr>
+        <tr>
+            <td>Linear Coefficient Scale</td>
+            <td>Exponential Scale</td>
+        </tr>
+        <tr><td id="slider_cell0"><input id="slider0" type="range" min="0" max="10" value="1" step="1"></input><div id="slider_text0"></div></td>
+            <td id="slider_cell1"><input id="slider1" type="range" min="0" max="10" value="1" step="1"></input><div id="slider_text1"></div></td></td></tr>
+        <tr>
+            <td>Inhibited Color</td>
+            <td>Amplified Color</td>
+        </tr>
+        <tr>
+            <td>
+                <select id="inh_clr">
+                    <option value="red" selected>Red</option>
+                    <option value="orange">Orange</option>
+                    <option value="blue">Blue</option>
+                    <option value="yellow">Yellow</option>
+                    <option value="green">Green</option>
+                    <option value="purple">Purple</option>
+                    <option value="brown">Brown</option>
+                    <option value="gray">Gray</option>
+                </select>
+            </td>
+            <td>
+                <select id="amp_clr">
+                    <option value="red">Red</option>
+                    <option value="orange">Orange</option>
+                    <option value="blue">Blue</option>
+                    <option value="yellow">Yellow</option>
+                    <option value="green" selected>Green</option>
+                    <option value="purple">Purple</option>
+                    <option value="brown">Brown</option>
+                    <option value="gray">Gray</option>
+                </select>
+            </td>
+        <tr><td><input id="export" type="button" value="Export Image"></td></tr>
+    </table>
+    <script src="KinomeOverlay.js"></script>
+</body>
+
 </html>
