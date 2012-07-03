@@ -12,7 +12,7 @@ KO.svg = KO.div     // main svg element
     .append("svg")
     .attr("width", 825)
     .attr("height", 975)
-    .style("background-image", "url(img/KinomePoster4.jpg)")
+    .style("background-image", "url(img/KinomePoster.png)")
     .style("background-size", "100% 100%");
 
 KO.scale = 0.25;    // scaling factor of image (vs original 3300x4956 jpg
