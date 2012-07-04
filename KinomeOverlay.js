@@ -136,9 +136,26 @@ KO.inputFileHandler = function(evt) {
     KO.reader.onload = function(e) {
         // Parse csv file
         KO.inputVals = d3.csv.parse(KO.reader.result);
+
+        /* sort by absolute val of intensity in descending order
+         * done so larger plots render first, and smaller ones
+         * may be accessed */
+        KO.inputVals.sort(function(a, b) {
+            if (Math.abs(pF(a.intensityVal)) > Math.abs(pF(b.intensityVal))) {
+                return -1;
+            }
+            else if (Math.abs(pF(a.intensityVal)) < Math.abs(pF(b.intensityVal))) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
+        });
+
         KO.iValPtGrp = KO.svg
                 .append("g")
                 .attr("id", "iValPtGrp");
+
         KO.iValPtGrp.selectAll("circle")
             .data(KO.inputVals)
             .enter()
