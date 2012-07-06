@@ -116,7 +116,7 @@ KO.getRadius = function(d) {
     else {
         intVal = d;
     }
-    radius = (pF(KO.Slider[0].value) * Math.abs(pF(intVal))) + pF(KO.Slider[1].value);
+    radius = (pF(KO.Slider[0].value) * Math.abs(pF(intVal))) + pF(KO.Slider[1].value) + 10;
     if (radius >= 0) {
         return radius;
     }
