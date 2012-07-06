@@ -136,9 +136,6 @@ KO.getIntVal = function (geneid_in) {
     return null;
 };
 
-    return null;
-};
-
 /* file upload reader type */
 KO.reader = new FileReader();
 
@@ -316,7 +313,3 @@ KO.LabelCheck.addEventListener("change", function() {
     }
 }, false);
 
-
-/*
- * TOREAD:
- * http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3361704/?tool=pubmed
