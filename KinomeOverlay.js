@@ -116,7 +116,7 @@ KO.getRadius = function(d) {
     else {
         intVal = d;
     }
-    radius = (pF(KO.Slider[0].value) * Math.abs(pF(intVal))) + pF(KO.Slider[1].value);
+    radius = (pF(KO.Slider[0].value) * Math.abs(pF(intVal))) + pF(KO.Slider[1].value) + 10;
     if (radius >= 0) {
         return radius;
     }
@@ -133,9 +133,6 @@ KO.getIntVal = function (geneid_in) {
             return KO.inputVals[i].intensityVal;
         }
     }
-    return null;
-};
-
     return null;
 };
 
@@ -316,7 +313,3 @@ KO.LabelCheck.addEventListener("change", function() {
     }
 }, false);
 
-
-/*
- * TOREAD:
- * http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3361704/?tool=pubmed
