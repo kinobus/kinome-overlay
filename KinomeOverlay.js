@@ -1,3 +1,10 @@
+/* KinomeOverlay.js
+ * Copyright 2012 (c) Joseph Lee & Nick Robin
+ * This software may be distributed under the MIT License
+ * See file LICENSE for details
+ *
+ * http://code.google.com/p/kinome-overlay
+ */
 var KO= {};     // KO-global scope
 
 pF = parseFloat;
@@ -126,6 +133,9 @@ KO.getIntVal = function (geneid_in) {
             return KO.inputVals[i].intensityVal;
         }
     }
+    return null;
+};
+
     return null;
 };
 
@@ -310,6 +320,3 @@ KO.LabelCheck.addEventListener("change", function() {
 /*
  * TOREAD:
  * http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3361704/?tool=pubmed
- * http://rnai.nih.gov/haystack/
- * http://jbx.sagepub.com/content/17/4/496.full
- */
