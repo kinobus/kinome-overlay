@@ -2,8 +2,7 @@ var KO= {};     // KO-global scope
 
 pF = parseFloat;
 
-KO.div = d3.select("body").append("div")
-    .attr("id", "KOdiv")
+KO.div = d3.select("#KOdiv")
     .attr("height", 975);
 
 KO.opac = 0.55;      // fill-opacity of scatterplot points
