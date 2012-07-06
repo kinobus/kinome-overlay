@@ -1,3 +1,10 @@
+/* KinomeOverlay.js
+ * Copyright 2012 (c) Joseph Lee & Nick Robin
+ * This software may be distributed under the MIT License
+ * See file LICENSE for details
+ *
+ * http://code.google.com/p/kinome-overlay
+ */
 var KO= {};     // KO-global scope
 
 pF = parseFloat;
@@ -39,6 +46,15 @@ KO.Slider = [
     document.getElementById("slider0"),
     document.getElementById("slider1")
 ];
+
+/* Slider attributes: slope, intercept */
+KO.slope = d3.select("#slope").attr("value", function() {
+    return KO.Slider[0].value;
+});
+KO.intercept = d3.select("#intercept").attr("value", function () {
+    return KO.Slider[1].value;
+});
+
 
 /* populate KO.coords table
  * import coords.json file */
@@ -117,6 +133,9 @@ KO.getIntVal = function (geneid_in) {
             return KO.inputVals[i].intensityVal;
         }
     }
+    return null;
+};
+
     return null;
 };
 
@@ -235,65 +254,69 @@ KO.inputFileHandler = function(evt) {
     };
 
     KO.reader.readAsText(files[0]);
-
-    /* Allow left slider to change iVal radii to be changed live */
-    KO.Slider[0].addEventListener("change", function() {
-        var plots = d3.selectAll(".iValPlot")
-            .attr("r", function () {
-                return KO.getRadius(pF(KO.getIntVal(d3.select(this).attr("id"))));
-            });
-    }, false);
-
-    /* Allow right slider to change iVal radii to be changed live */
-    KO.Slider[1].addEventListener("change", function() {
-        var plots = d3.selectAll(".iValPlot")
-            .attr("r", function () {
-                return KO.getRadius(pF(KO.getIntVal(d3.select(this).attr("id"))));
-            });
-    }, false);
-
-    /* On inhibitor color change */
-    KO.InhClr.addEventListener("change", function() {
-        var plots = d3.selectAll(".iValPlot")
-            .style("fill", function () {
-                if (KO.getIntVal(d3.select(this).attr("id")) < 0) {
-                    return KO.colors[KO.InhClr.selectedIndex];
-                }
-                else {
-                    return d3.select(this).style("fill");
-                }
-            });
-    }, false);
-
-    /* On activator color change */
-    KO.AmpClr.addEventListener("change", function() {
-        var plots = d3.selectAll(".iValPlot")
-            .style("fill", function () {
-                if (KO.getIntVal(d3.select(this).attr("id")) > 0) {
-                    return KO.colors[KO.AmpClr.selectedIndex];
-                }
-                else {
-                    return d3.select(this).style("fill");
-                }
-            });
-    }, false);
-
-    /* Show Label checkbox */
-    KO.LabelCheck.addEventListener("change", function() {
-        if (KO.LabelCheck.checked == true) {
-            KO.LabelGrp.attr("visibility", "visible");
-        }
-        else {
-            KO.LabelGrp.attr("visibility", "hidden");
-        }
-    }, false);
-
 };
+
 document.getElementById("KOfiles").addEventListener("change", KO.inputFileHandler, false);
+
+/* Allow left slider to change iVal radii to be changed live */
+KO.Slider[0].addEventListener("change", function() {
+    KO.slope.attr("value", function() {
+        return KO.Slider[0].value;
+    });
+    var plots = d3.selectAll(".iValPlot")
+        .attr("r", function () {
+            return KO.getRadius(pF(KO.getIntVal(d3.select(this).attr("id"))));
+        });
+}, false);
+
+/* Allow right slider to change iVal radii to be changed live */
+KO.Slider[1].addEventListener("change", function() {
+    KO.intercept.attr("value", function() {
+        return KO.Slider[1].value;
+    });
+    var plots = d3.selectAll(".iValPlot")
+        .attr("r", function () {
+            return KO.getRadius(pF(KO.getIntVal(d3.select(this).attr("id"))));
+        });
+}, false);
+
+/* On inhibitor color change */
+KO.InhClr.addEventListener("change", function() {
+    var plots = d3.selectAll(".iValPlot")
+        .style("fill", function () {
+            if (KO.getIntVal(d3.select(this).attr("id")) < 0) {
+                return KO.colors[KO.InhClr.selectedIndex];
+            }
+            else {
+                return d3.select(this).style("fill");
+            }
+        });
+}, false);
+
+/* On activator color change */
+KO.AmpClr.addEventListener("change", function() {
+    var plots = d3.selectAll(".iValPlot")
+        .style("fill", function () {
+            if (KO.getIntVal(d3.select(this).attr("id")) > 0) {
+                return KO.colors[KO.AmpClr.selectedIndex];
+            }
+            else {
+                return d3.select(this).style("fill");
+            }
+        });
+}, false);
+
+/* Show Label checkbox */
+KO.LabelCheck.addEventListener("change", function() {
+    if (KO.LabelCheck.checked == true) {
+        KO.LabelGrp.attr("visibility", "visible");
+    }
+    else {
+        KO.LabelGrp.attr("visibility", "hidden");
+    }
+}, false);
+
 
 /*
  * TOREAD:
  * http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3361704/?tool=pubmed
- * http://rnai.nih.gov/haystack/
- * http://jbx.sagepub.com/content/17/4/496.full
- */
