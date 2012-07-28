@@ -7,31 +7,55 @@
 </head>
 
 <body>
-    <div id="title">Kinome Overlay</div>
+<div id="title">Kinome Overlay</div>
+<table border="0" width="825px">
+
+    <tr><td><!-- Accordion -->
     <div id="accordion">
         <h3><a href="#section1">Upload Data</a></h3>
-        <div>
+        <div class="accordionDiv">
             <input id="csv_file" type="file">
         </div>
         <h3><a href="#section2">Radius Size</a></h3>
         <div id="radius">
-            <div class="slider" id="slope" data-bind="value: slope"></div>
-            <input type="text" id="slope_text" data-bind="value: slope" maxlength="3" size="3"></input>
-
-            <div class="slider" id="yint" data-bind="value: yint"></div>
-            <input type="text" id="yint_text" data-bind="value: yint" maxlength="3" size="3"></input>
-        </div>
+            <table border="0">
+                <tr>
+                    <td><div class="slider" id="slope" data-bind="value: slope"></div></td>
+                    <td><input type="text" id="slope_text" data-bind="value: slope" maxlength="3" size="3"></input></td>
+                </tr>
+                <tr>
+                    <td><div class="slider" id="yint" data-bind="value: yint"></div></td>
+                    <td><input type="text" id="yint_text" data-bind="value: yint" maxlength="3" size="3"></input></td>
+                </tr>
+            </table>
+        </div class="accordionDiv">
         <h3><a href="#section2">Colors</a></h3>
         <div id="color">
-
+            <div class="accordionDiv">
+            </div>
         </div>
     </div>
+    </td></tr>
+
+    <tr><td><!-- Kinome -->
+    <div id="kinomeDiv">
+        <svg id="kinome">
+        <circle cx="100" cy="100" r="1" data-bind="attr: { r: slope }" />
+        </svg>
+    </div>
+    </td></tr>
+
+</table>
+
+    <p class="footer">
+        Copyright 2012 &copy; Joseph Lee, Nick Robin
+    </p>
 
     <!-- Necessary JS Libraries -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="js/jquery-ui-1.8.22.custom.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.8.1/d3.v2.min.js"></script>
+    <!--script src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.8.1/d3.v2.min.js"></script-->
     <script src="js/kinome-overlay.js"></script>
 </body>
 

@@ -1,9 +1,43 @@
-#accordion {
-    font-size: 12;
-}
 #title {
     font-size: 70;
     font-family: sans-serif;
     font-weight: 700;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#accordion .accordionDiv {
+    font-family: sans-serif;
+    font-size: 12;
+}
+
+#accordion h3 {
+    font-size: 14;
+    font-family: sans-serif;
+    font-weight: 600;
+}
+
+.footer {
+    font-family: sans-serif;
+    font-size: 16;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+#kinomeDiv {
+    width: 825px;
+}
+
+#kinome {
+    width: 825px;
+    height: 975px;
+    background-image: url(../img/KinomePoster.png);
+    background-size: 100% 100%;
+}
+
+.kinase {
+    stroke: 2;
+    fill: white;
 }
 
