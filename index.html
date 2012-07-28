@@ -4,7 +4,7 @@
     <title>KinomeOverlay</title>
     <link href="css/custom-theme/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" />
     <link href="css/kinome.css" rel="stylesheet" type="text/css" />
-</head>
+    </head>
 
 <body>
 <div id="title">Kinome Overlay</div>
@@ -38,11 +38,9 @@
     </td></tr>
 
     <tr><td><!-- Kinome -->
-    <div id="kinomeDiv">
-        <svg id="kinome">
-        <circle cx="100" cy="100" r="1" data-bind="attr: { r: slope }" />
+        <svg id="kinome" data-bind="foreach: kinases">
+            <circle class="kinase" r="2" data-bind="attr: { cx: xcoord, cy: ycoord }" />
         </svg>
-    </div>
     </td></tr>
 
 </table>
@@ -55,8 +53,8 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="js/jquery-ui-1.8.22.custom.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"></script>
-    <!--script src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.8.1/d3.v2.min.js"></script-->
     <script src="js/kinome-overlay.js"></script>
+   <!--script src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.8.1/d3.v2.min.js"></script-->
 </body>
 
 </html>

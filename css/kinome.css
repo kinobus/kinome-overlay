@@ -25,10 +25,6 @@
     text-align: left;
 }
 
-#kinomeDiv {
-    width: 825px;
-}
-
 #kinome {
     width: 825px;
     height: 975px;
@@ -37,7 +33,7 @@
 }
 
 .kinase {
-    stroke: 2;
+    stroke: 1;
     fill: white;
 }
 
