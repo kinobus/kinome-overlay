@@ -2,82 +2,37 @@
 
 <head>
     <title>KinomeOverlay</title>
-    <style type="text/css">
-        body {
-            font-family:sans-serif;
-        };
-    </style>
+    <link href="css/custom-theme/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" />
+    <link href="css/kinome.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
+    <div id="title">Kinome Overlay</div>
+    <div id="accordion">
+        <h3><a href="#section1">Upload Data</a></h3>
+        <div>
+            <input id="csv_file" type="file">
+        </div>
+        <h3><a href="#section2">Radius Size</a></h3>
+        <div id="radius">
+            <div class="slider" id="slope" data-bind="value: slope"></div>
+            <input type="text" id="slope_text" data-bind="value: slope" maxlength="3" size="3"></input>
 
-<table id="main" border="0">
-    <tr>
-        <td valign="top">
-    <table border="0" id="ctrl_table">
-        <tr>
-            <td><a href="demo.csv">demo.csv</a></td>
-            <td id="ctrl_upload"><input type="file" id="KOfiles" name="KOfiles" accept="text/csv"></input></td>
-        </tr>
-        <tr>
-            <td>Scaling Coefficient</td>
-            <td>Intercept</td>
-        </tr>
-        <tr>
-            <td id="slider_cell0">
-                <nobr><input id="slider0" type="range" min="0" max="10" value="1" step="1" />
-                <input id="slope" maxlength="3" size="3"  /></nobr>
-            </td>
-            <td id="slider_cell1">
-                <nobr><input id="slider1" type="range" min="-100" max="100" value="0" step="1" />
-                <input id="intercept" maxlength="3" size="3" /></nobr>
-            </td>
-        </tr>
-        <tr>
-            <td>Inhibitor Color</td>
-            <td>Activator Color</td>
-        </tr>
-        <tr>
-            <td>
-                <select id="inh_clr">
-                    <option value="red" selected>Red</option>
-                    <option value="orange">Orange</option>
-                    <option value="blue">Blue</option>
-                    <option value="yellow">Yellow</option>
-                    <option value="green">Green</option>
-                    <option value="purple">Purple</option>
-                    <option value="brown">Brown</option>
-                    <option value="gray">Gray</option>
-                </select>
-            </td>
-            <td>
-                <select id="amp_clr">
-                    <option value="red">Red</option>
-                    <option value="orange">Orange</option>
-                    <option value="blue">Blue</option>
-                    <option value="yellow">Yellow</option>
-                    <option value="green" selected>Green</option>
-                    <option value="purple">Purple</option>
-                    <option value="brown">Brown</option>
-                    <option value="gray">Gray</option>
-                </select>
-            </td>
-        <tr>
-            <td><input type="checkbox" id="label_toggle" checked="true" />Show labels</td>
-        </tr>
-        <tr><td><input id="export" type="button" value="Export Image"></td></tr>
-    </table>
-</td>
-    <td>
-        <div id="KOdiv"></div>
-    </td>
-</tr>
-</table>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.2/backbone-min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.8.1/d3.v2.min.js"></script>
-<script src="kinome-overlay.js"></script>
+            <div class="slider" id="yint" data-bind="value: yint"></div>
+            <input type="text" id="yint_text" data-bind="value: yint" maxlength="3" size="3"></input>
+        </div>
+        <h3><a href="#section2">Colors</a></h3>
+        <div id="color">
+
+        </div>
+    </div>
+
+    <!-- Necessary JS Libraries -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="js/jquery-ui-1.8.22.custom.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.8.1/d3.v2.min.js"></script>
+    <script src="js/kinome-overlay.js"></script>
 </body>
 
 </html>
