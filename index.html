@@ -14,7 +14,7 @@
     <div id="accordion">
         <h3><a href="#section1">Upload Data</a></h3>
         <div class="accordionDiv">
-            <input id="csv_file" type="file">
+            <input id="csv_file" type="file" accept="text/csv" multiple data-bind="event: { change: onFileUpload }" />
         </div>
         <h3><a href="#section2">Radius Size</a></h3>
         <div id="radius">

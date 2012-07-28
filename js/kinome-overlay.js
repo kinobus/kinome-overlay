@@ -47,6 +47,30 @@ var KinomeViewModel = function() {
         }
     });
 
+    // Upload file handle
+    self.reader = new FileReader();
+    self.reader.onloadend = function(e) {
+        var temp = self.reader.result.split("\n");
+        var csv_data = [];
+        while(temp.length > 0) {
+            data.push(temp.pop().split(','));
+        }
+        console.log(csv_data);
+
+    };
+    self.onFileUpload = function() {
+        var upload_file = document.getElementById("csv_file").files;
+        self.reader.readAsText(upload_file[0]);
+    };
+
+    self.parseCSV = function(raw_text) {
+        var data = raw_text.split("\n");
+        while(data.length > 0) {
+            var temp = data.pop();
+            //csv_data.concat(
+        }
+    };
+
 };
 
 KVM = new KinomeViewModel();
