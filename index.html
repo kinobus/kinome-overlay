@@ -40,8 +40,10 @@
     </td></tr>
 
     <tr><td><!-- Kinome -->
-        <svg id="kinome" data-bind="foreach: kinases">
-            <circle class="kinase" r="2" data-bind="attr: { cx: xcoord, cy: ycoord }" />
+        <svg id="kinome">
+            <g class="group" id="anchor" data-bind="foreach: kinases">
+                <circle class="kinase" r="2" data-bind="attr: { cx: xcoord, cy: ycoord }" />
+            </g>
         </svg>
     </td></tr>
 
