@@ -45,7 +45,7 @@
                 <circle class="kinase" r="2" data-bind="attr: { cx: xcoord, cy: ycoord }" />
             </g-->
             <g class="data" id="grp" data-bind="foreach: userData">
-            <circle class="data" id="pts" data-bind="attr: { cx: x, cy: y, r: 10 }" />
+            <circle class="data" id="pts" data-bind="attr: { cx: x, cy: y, r: getRadius(Intensity) }, style: { fill: getColor(Intensity) }" />
             </g>
         </svg>
     </td></tr>

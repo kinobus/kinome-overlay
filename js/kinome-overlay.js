@@ -65,12 +65,28 @@ var KinomeViewModel = function() {
                         "GeneID": temp[0],
                         "Intensity": temp[1],
                         "x": coord.x,
-                        "y": coord.y
+                        "y": coord.y,
+                        "getRadius": function(intensity) {
+                            var radius = self.slope() * intensity * Math.pow(-1, (intensity < 0)) + self.yint();
+                            if (radius < 0) {
+                                return 0;
+                            }
+                            return radius;
+                        },
+                        // TODO: add color bindings
+                        "getColor": function(intensity) {
+                            if (intensity >= 0) {
+                                return "green";
+                            }
+                            else {
+                                return "red";
+                            }
+                        }
                     });
                 }
             }
         }
-        console.log(self.userData());
+        //console.log(self.userData());
     };
 
     // Event binding on View: input file-upload
