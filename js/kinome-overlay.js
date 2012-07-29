@@ -47,29 +47,50 @@ var KinomeViewModel = function() {
         }
     });
 
-    // Upload file handle
+    /* Upload file handle */
+    self.userData = ko.observableArray();
     self.reader = new FileReader();
-    self.reader.onloadend = function(e) {
-        var temp = self.reader.result.split("\n");
-        var csv_data = [];
-        while(temp.length > 0) {
-            data.push(temp.pop().split(','));
-        }
-        console.log(csv_data);
 
+    // Event triggered by finished file upload
+    // called upon completion of reader.readAsText
+    self.reader.onloadend = function(e) {
+        var data = self.reader.result.split("\n");
+        while(data.length > 0) {
+            var temp = data.pop();
+            if (temp.length > 0) {
+                temp = temp.split(",");
+                if (pF(temp[0]) && pF(temp[1])) {   // discard non-numbers
+                    var coord = self.getCoord(temp[0]);
+                    self.userData.push({
+                        "GeneID": temp[0],
+                        "Intensity": temp[1],
+                        "x": coord.x,
+                        "y": coord.y
+                    });
+                }
+            }
+        }
+        console.log(self.userData());
     };
+
+    // Event binding on View: input file-upload
     self.onFileUpload = function() {
         var upload_file = document.getElementById("csv_file").files;
         self.reader.readAsText(upload_file[0]);
     };
 
-    self.parseCSV = function(raw_text) {
-        var data = raw_text.split("\n");
-        while(data.length > 0) {
-            var temp = data.pop();
-            //csv_data.concat(
+    self.getCoord = function(geneid) {
+        for(i = 0; i < self.kinases.length; i++) {
+            if (self.kinases[i].GeneID == geneid) {
+                return { 
+                    "x": self.kinases[i].xcoord,
+                    "y": self.kinases[i].ycoord
+                };
+            }
         }
+        return null;
     };
+
 
 };
 
