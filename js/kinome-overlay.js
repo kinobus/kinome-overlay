@@ -20,7 +20,8 @@ $(document).ready(function() {
             KVM.yint(ui.value);
         }
     });
-    $("#accordion").accordion();
+    $("#control").draggable({ handle: "p" });
+    $("#tabs").tabs();
 });
 
 var KinomeViewModel = function() {
