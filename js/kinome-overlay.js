@@ -6,6 +6,7 @@
  * http://code.google.com/p/kinome-overlay
  */
 
+// Heavily used shortcut
 pF = parseFloat;
 
 $(document).ready(function() {
@@ -19,11 +20,7 @@ $(document).ready(function() {
             KVM.yint(ui.value);
         }
     });
-    $("#accordion").accordion({
-        autoHeight: true,
-        navigation: true
-    });
-
+    $("#accordion").accordion();
 });
 
 var KinomeViewModel = function() {
