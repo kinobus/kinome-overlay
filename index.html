@@ -13,7 +13,7 @@
     <table>
         <tr>
             <td valign="top">
-                <div id="tabs" style="width: 300px">
+                <div id="tabs" style="width: 100%">
                     <ul>
                         <li><a href="#upload">Upload Data</a></li>
                         <li><a href="#scaling">Scaling</a></li>
@@ -26,7 +26,7 @@
                         <table border="0">
                             <tr>
                                 <td><strong>Slope</strong></td>
-                                <td><div class="slider" id="slope" data-bind="value: slope"></div></td>
+                                <td width="200px"><div class="slider" id="slope" data-bind="value: slope"></div></td>
                                 <td><input type="text" id="slope_text" data-bind="value: slope" maxlength="3" size="3"></input></td>
                             </tr>
                             <tr>
@@ -36,7 +36,47 @@
                             </tr>
                         </table>
                     </div>
+
+                    <!-- Color Picker -->
                     <div id="color" class="tab">
+                        <center>
+                        <table>
+                            <tr>
+                                <th>Inhibitor</th>
+                                <th>Activator</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td><div id="red" class="inh"></div></td>
+                                            <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="inh"></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div id="green" class="inh"></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div id="blue" class="inh"></div></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td><div id="red" class="act"></div></td>
+                                            <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" class="act" id="act"></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div id="green" class="act"></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div id="blue" class="act"></div></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        </center>
                     </div>
                 </div>
             </td>
