@@ -56,6 +56,14 @@ $(document).ready(function() {
     $( "#green" ).slider( "value", 140 );
     $( "#blue" ).slider( "value", 60 );
 
+    // Demo button
+    $("#demo").button();
+    $("#demo").click(function() {
+        KVM.userData.push({ GeneID: 157, Intensity: 20, x: 300, y: 400, getRadius: function(i) { return 15; }, getColor: function(i) { return "red"; } } );
+        KVM.userData.push({ GeneID: 157, Intensity: 20, x: 350, y: 100, getRadius: function(i) { return 30; }, getColor: function(i) { return "green"; } } );
+        KVM.userData.push({ GeneID: 157, Intensity: 20, x: 600, y: 600, getRadius: function(i) { return 20; }, getColor: function(i) { return "blue"; } } );
+    });
+
 });
 
 var KinomeViewModel = function() {
