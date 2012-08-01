@@ -50,28 +50,28 @@
                                 <td>
                                     <table>
                                         <tr>
-                                            <td><div id="red" class="inh"></div></td>
-                                            <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="inh"></div></td>
+                                            <td><div id="red" class="inh" data-bind="value: inhR"></div></td>
+                                            <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="inh" data-bind="style: { backgroundColor: inhColor }"></div></td>
                                         </tr>
                                         <tr>
-                                            <td><div id="green" class="inh"></div></td>
+                                            <td><div id="green" class="inh" data-bind="value: inhG"></div></td>
                                         </tr>
                                         <tr>
-                                            <td><div id="blue" class="inh"></div></td>
+                                            <td><div id="blue" class="inh" data-bind="value: inhB"></div></td>
                                         </tr>
                                     </table>
                                 </td>
                                 <td>
                                     <table>
                                         <tr>
-                                            <td><div id="red" class="act"></div></td>
-                                            <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" class="act" id="act"></div></td>
+                                            <td><div id="red" class="act" data-bind="value: actR"></div></td>
+                                            <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="act" data-bind="style: { backgroundColor: actColor }"></div></td>
                                         </tr>
                                         <tr>
-                                            <td><div id="green" class="act"></div></td>
+                                            <td><div id="green" class="act" data-bind="value: actG"></div></td>
                                         </tr>
                                         <tr>
-                                            <td><div id="blue" class="act"></div></td>
+                                            <td><div id="blue" class="act" data-bind="value: actB"></div></td>
                                         </tr>
                                     </table>
                                 </td>
@@ -94,7 +94,7 @@
                             <circle class="kinase" r="2" data-bind="attr: { cx: xcoord, cy: ycoord }" />
                         </g-->
                         <g class="data" id="grp" data-bind="foreach: userData">
-                        <circle class="data" id="pts" data-bind="attr: { cx: x, cy: y, r: getRadius(Intensity) }, style: { fill: getColor(Intensity) }" />
+                            <circle class="data" id="pts" data-bind="attr: { cx: x, cy: y, r: getRadius(Intensity) }, style: { fill: getColor(Intensity) }" />
                         </g>
                     </svg>
                 </div>

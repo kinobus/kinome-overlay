@@ -10,7 +10,7 @@
 pF = parseFloat;
 
 $(document).ready(function() {
-    $("#slope").slider({ min: 0, max: 10, step: 1, value: 1,
+    $("#slope").slider({ min: 0, max: 10, step: 1, value: 5,
         slide: function(event, ui) {
             KVM.slope(ui.value);
         }
@@ -37,24 +37,78 @@ $(document).ready(function() {
         });
         return hex.join( "" ).toUpperCase();
     }
-    function refreshSwatch() {
-        var red = $( "#red" ).slider( "value" ),
-            green = $( "#green" ).slider( "value" ),
-            blue = $( "#blue" ).slider( "value" ),
-            hex = hexFromRGB( red, green, blue );
-        $( ".swatch" ).css( "background-color", "#" + hex );
-    }
-    $( "#red, #green, #blue" ).slider({
+    $(".inh#red").slider({
         orientation: "horizontal",
         range: "min",
         max: 255,
-        value: 127,
-        slide: refreshSwatch,
-        change: refreshSwatch
+        value: 255,
+        slide: function(event, ui) {
+            KVM.inhR(ui.value);
+        },
+        change: function(event, ui) {
+            KVM.inhR(ui.value);
+        }
     });
-    $( "#red" ).slider( "value", 255 );
-    $( "#green" ).slider( "value", 140 );
-    $( "#blue" ).slider( "value", 60 );
+    $(".inh#green").slider({
+        orientation: "horizontal",
+        range: "min",
+        max: 255,
+        value: 0,
+        slide: function(event, ui) {
+            KVM.inhG(ui.value);
+        },
+        change: function(event, ui) {
+            KVM.inhG(ui.value);
+        }
+    });
+    $(".inh#blue").slider({
+        orientation: "horizontal",
+        range: "min",
+        max: 255,
+        value: 0,
+        slide: function(event, ui) {
+            KVM.inhB(ui.value);
+        },
+        change: function(event, ui) {
+            KVM.inhB(ui.value);
+        }
+    });
+    $(".act#red").slider({
+        orientation: "horizontal",
+        range: "min",
+        max: 255,
+        value: 0,
+        slide: function(event, ui) {
+            KVM.actR(ui.value);
+        },
+        change: function(event, ui) {
+            KVM.actR(ui.value);
+        }
+    });
+    $(".act#green").slider({
+        orientation: "horizontal",
+        range: "min",
+        max: 255,
+        value: 255,
+        slide: function(event, ui) {
+            KVM.actG(ui.value);
+        },
+        change: function(event, ui) {
+            KVM.actG(ui.value);
+        }
+    });
+    $(".act#blue").slider({
+        orientation: "horizontal",
+        range: "min",
+        max: 255,
+        value: 0,
+        slide: function(event, ui) {
+            KVM.actB(ui.value);
+        },
+        change: function(event, ui) {
+            KVM.actB(ui.value);
+        }
+    });
 
     // Demo button
     $("#demo").button();
@@ -64,13 +118,49 @@ $(document).ready(function() {
         KVM.userData.push({ GeneID: 157, Intensity: 20, x: 600, y: 600, getRadius: function(i) { return 20; }, getColor: function(i) { return "blue"; } } );
     });
 
-});
 
 var KinomeViewModel = function() {
     var self = this;
 
-    self.slope = ko.observable(1);
+    // radius scaling values
+    self.slope = ko.observable(5);
     self.yint = ko.observable(0);
+
+
+    // Observable color values
+    self.inhR = ko.observable(255);
+    self.inhG = ko.observable(0);
+    self.inhB = ko.observable(0);
+
+    self.actR = ko.observable(0);
+    self.actG = ko.observable(255);
+    self.actB = ko.observable(0);
+
+
+    // Color picker
+    self.hexFromRGB = function (r, g, b) {
+        var hex = [
+            r.toString( 16 ),
+            g.toString( 16 ),
+            b.toString( 16 )
+        ];
+        $.each( hex, function( nr, val ) {
+            if ( val.length === 1 ) {
+                hex[ nr ] = "0" + val;
+            }
+        });
+        return hex.join( "" ).toUpperCase();
+    };
+    self.inhColor = ko.computed(function() {
+        return "#" + self.hexFromRGB(self.inhR(),
+            self.inhG(),
+            self.inhB());
+    });
+    self.actColor = ko.computed(function() {
+        return "#" + self.hexFromRGB(self.actR(),
+            self.actG(),
+            self.actB());
+    });
 
     // Synchronously get kinase coordinates
     self.kinases = [];
@@ -87,7 +177,8 @@ var KinomeViewModel = function() {
         }
     });
 
-    /* Upload file handle */
+
+        /* Upload file handle */
     self.userData = ko.observableArray();
     self.reader = new FileReader();
 
@@ -116,17 +207,16 @@ var KinomeViewModel = function() {
                         // TODO: add color bindings
                         "getColor": function(intensity) {
                             if (intensity >= 0) {
-                                return "green";
+                                return self.actColor();
                             }
                             else {
-                                return "red";
+                                return self.inhColor();
                             }
                         }
                     });
                 }
             }
         }
-        //console.log(self.userData());
     };
 
     // Event binding on View: input file-upload
@@ -147,11 +237,10 @@ var KinomeViewModel = function() {
         return null;
     };
 
-    self.inhColor = ko.observable();    // inhibitor color
-    self.actColor = ko.observable();    // activator color
-
 };
 
 KVM = new KinomeViewModel();
 
 ko.applyBindings(KVM);
+
+});
