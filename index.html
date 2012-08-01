@@ -2,74 +2,115 @@
 
 <head>
     <title>KinomeOverlay</title>
-    <script src="d3.v2.js"></script>
-</head>
+    <link href="css/custom-theme/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" />
+    <link href="css/kinome.css" rel="stylesheet" type="text/css" />
+    </head>
 
 <body>
+    <!-- Title -->
+    <h1 id="title">Kinome Overlay</h1>
 
-<table id="main" border="0">
-    <tr>
-        <td valign="top">
-    <table border="0" id="ctrl_table">
+    <table>
         <tr>
-            <td><a href="demo.csv">demo.csv</a></td>
-            <td id="ctrl_upload"><input type="file" id="KOfiles" name="KOfiles" accept="text/csv"></input></td>
-        </tr>
-        <tr>
-            <td>Scaling Coefficient</td>
-            <td>Intercept</td>
-        </tr>
-        <tr>
-            <td id="slider_cell0">
-                <nobr><input id="slider0" type="range" min="0" max="10" value="1" step="1" />
-                <input id="slope" maxlength="3" size="3"  /></nobr>
+            <td valign="top">
+                <div id="tabs" style="width: 100%">
+                    <ul>
+                        <li><a href="#upload">Upload Data</a></li>
+                        <li><a href="#scaling">Scaling</a></li>
+                        <li><a href="#color">Color</a></li>
+                        <li><a href="#demo">Demo</a></li>
+                    </ul>
+                    <div id="upload" class="tab">
+                        <input id="csv_file" type="file" accept="text/csv" multiple data-bind="event: { change: onFileUpload }" />
+                    </div>
+                    <div id="scaling" class="tab">
+                        <table border="0">
+                            <tr>
+                                <td><strong>Slope</strong></td>
+                                <td width="200px"><div class="slider" id="slope" data-bind="value: slope"></div></td>
+                                <td><input type="text" id="slope_text" data-bind="value: slope" maxlength="3" size="3"></input></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Y-intercept</strong></td>
+                                <td><div class="slider" id="yint" data-bind="value: yint"></div></td>
+                                <td><input type="text" id="yint_text" data-bind="value: yint" maxlength="3" size="3"></input></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Color Picker -->
+                    <div id="color" class="tab">
+                        <center>
+                        <table>
+                            <tr>
+                                <th>Inhibitor</th>
+                                <th>Activator</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td><div id="red" class="inh" data-bind="value: inhR"></div></td>
+                                            <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="inh" data-bind="style: { backgroundColor: inhColor }"></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div id="green" class="inh" data-bind="value: inhG"></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div id="blue" class="inh" data-bind="value: inhB"></div></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td><div id="red" class="act" data-bind="value: actR"></div></td>
+                                            <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="act" data-bind="style: { backgroundColor: actColor }"></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div id="green" class="act" data-bind="value: actG"></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div id="blue" class="act" data-bind="value: actB"></div></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        </center>
+                    </div>
+                    <!-- Demo -->
+                    <div id="demo" class="tab">
+                        <button id="demo">Plot Demo Data</button>
+                    </div>
+                </div>
             </td>
-            <td id="slider_cell1">
-                <nobr><input id="slider1" type="range" min="-100" max="100" value="0" step="1" />
-                <input id="intercept" maxlength="3" size="3" /></nobr>
-            </td>
-        </tr>
-        <tr>
-            <td>Inhibitor Color</td>
-            <td>Activator Color</td>
         </tr>
         <tr>
             <td>
-                <select id="inh_clr">
-                    <option value="red" selected>Red</option>
-                    <option value="orange">Orange</option>
-                    <option value="blue">Blue</option>
-                    <option value="yellow">Yellow</option>
-                    <option value="green">Green</option>
-                    <option value="purple">Purple</option>
-                    <option value="brown">Brown</option>
-                    <option value="gray">Gray</option>
-                </select>
+                <div id="kinomeDiv" style="position: static; left: 10px">
+                    <svg id="kinome">
+                        <!--g class="group" id="anchor" data-bind="foreach: kinases">
+                            <circle class="kinase" r="2" data-bind="attr: { cx: xcoord, cy: ycoord }" />
+                        </g-->
+                        <g class="data" id="grp" data-bind="foreach: userData">
+                            <circle class="data" id="pts" data-bind="attr: { cx: x, cy: y, r: getRadius(Intensity) }, style: { fill: getColor(Intensity) }" />
+                        </g>
+                    </svg>
+                </div>
             </td>
-            <td>
-                <select id="amp_clr">
-                    <option value="red">Red</option>
-                    <option value="orange">Orange</option>
-                    <option value="blue">Blue</option>
-                    <option value="yellow">Yellow</option>
-                    <option value="green" selected>Green</option>
-                    <option value="purple">Purple</option>
-                    <option value="brown">Brown</option>
-                    <option value="gray">Gray</option>
-                </select>
-            </td>
-        <tr>
-            <td><input type="checkbox" id="label_toggle" checked="true" />Show labels</td>
         </tr>
-        <tr><td><input id="export" type="button" value="Export Image"></td></tr>
     </table>
-</td>
-    <td>
-        <div id="KOdiv"></div>
-    </td>
-</tr>
-</table>
-<script src="KinomeOverlay.js"></script>
+
+    <p class="footer">
+        Copyright 2012 &copy; Joseph Lee, Nick Robin
+    </p>
+
+    <!-- Necessary JS Libraries -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="js/jquery-ui-1.8.22.custom.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"></script>
+    <script src="js/kinome-overlay.js"></script>
 </body>
 
 </html>
