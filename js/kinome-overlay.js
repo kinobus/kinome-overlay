@@ -119,128 +119,128 @@ $(document).ready(function() {
     });
 
 
-var KinomeViewModel = function() {
-    var self = this;
+    var KinomeViewModel = function() {
+        var self = this;
 
-    // radius scaling values
-    self.slope = ko.observable(5);
-    self.yint = ko.observable(0);
-
-
-    // Observable color values
-    self.inhR = ko.observable(255);
-    self.inhG = ko.observable(0);
-    self.inhB = ko.observable(0);
-
-    self.actR = ko.observable(0);
-    self.actG = ko.observable(255);
-    self.actB = ko.observable(0);
+        // radius scaling values
+        self.slope = ko.observable(5);
+        self.yint = ko.observable(0);
 
 
-    // Color picker
-    self.hexFromRGB = function (r, g, b) {
-        var hex = [
-            r.toString( 16 ),
-            g.toString( 16 ),
-            b.toString( 16 )
-        ];
-        $.each( hex, function( nr, val ) {
-            if ( val.length === 1 ) {
-                hex[ nr ] = "0" + val;
-            }
+        // Observable color values
+        self.inhR = ko.observable(255);
+        self.inhG = ko.observable(0);
+        self.inhB = ko.observable(0);
+
+        self.actR = ko.observable(0);
+        self.actG = ko.observable(255);
+        self.actB = ko.observable(0);
+
+
+        // Color picker
+        self.hexFromRGB = function (r, g, b) {
+            var hex = [
+                r.toString( 16 ),
+                g.toString( 16 ),
+                b.toString( 16 )
+            ];
+            $.each( hex, function( nr, val ) {
+                if ( val.length === 1 ) {
+                    hex[ nr ] = "0" + val;
+                }
+            });
+            return hex.join( "" ).toUpperCase();
+        };
+        self.inhColor = ko.computed(function() {
+            return "#" + self.hexFromRGB(self.inhR(),
+                self.inhG(),
+                self.inhB());
         });
-        return hex.join( "" ).toUpperCase();
-    };
-    self.inhColor = ko.computed(function() {
-        return "#" + self.hexFromRGB(self.inhR(),
-            self.inhG(),
-            self.inhB());
-    });
-    self.actColor = ko.computed(function() {
-        return "#" + self.hexFromRGB(self.actR(),
-            self.actG(),
-            self.actB());
-    });
+        self.actColor = ko.computed(function() {
+            return "#" + self.hexFromRGB(self.actR(),
+                self.actG(),
+                self.actB());
+        });
 
-    // Synchronously get kinase coordinates
-    self.kinases = [];
-    $.ajax({
-        async: false,
-        dataType: "json",
-        url: "kotable.json",
-        success: function(data) {
-            self.kinases = data;
-            for(i = 0; i < self.kinases.length; i++) {
-                self.kinases[i].xcoord /= 4;
-                self.kinases[i].ycoord /= 4;
-            }
-        }
-    });
-
-
-        /* Upload file handle */
-    self.userData = ko.observableArray();
-    self.reader = new FileReader();
-
-    // Event triggered by finished file upload
-    // called upon completion of reader.readAsText
-    self.reader.onloadend = function(e) {
-        var data = self.reader.result.split("\n");
-        while(data.length > 0) {
-            var temp = data.pop();
-            if (temp.length > 0) {
-                temp = temp.split(",");
-                if (pF(temp[0]) && pF(temp[1])) {   // discard non-numbers
-                    var coord = self.getCoord(temp[0]);
-                    self.userData.push({
-                        "GeneID": temp[0],
-                        "Intensity": temp[1],
-                        "x": coord.x,
-                        "y": coord.y,
-                        "getRadius": function(intensity) {
-                            var radius = self.slope() * intensity * Math.pow(-1, (intensity < 0)) + self.yint();
-                            if (radius < 0) {
-                                return 0;
-                            }
-                            return radius;
-                        },
-                        // TODO: add color bindings
-                        "getColor": function(intensity) {
-                            if (intensity >= 0) {
-                                return self.actColor();
-                            }
-                            else {
-                                return self.inhColor();
-                            }
-                        }
-                    });
+        // Synchronously get kinase coordinates
+        self.kinases = [];
+        $.ajax({
+            async: false,
+            dataType: "json",
+            url: "kotable.json",
+            success: function(data) {
+                self.kinases = data;
+                for(i = 0; i < self.kinases.length; i++) {
+                    self.kinases[i].xcoord /= 4;
+                    self.kinases[i].ycoord /= 4;
                 }
             }
-        }
-    };
+        });
 
-    // Event binding on View: input file-upload
-    self.onFileUpload = function() {
-        var upload_file = document.getElementById("csv_file").files;
-        self.reader.readAsText(upload_file[0]);
-    };
 
-    self.getCoord = function(geneid) {
-        for(i = 0; i < self.kinases.length; i++) {
-            if (self.kinases[i].GeneID == geneid) {
-                return { 
-                    "x": self.kinases[i].xcoord,
-                    "y": self.kinases[i].ycoord
-                };
+            /* Upload file handle */
+        self.userData = ko.observableArray();
+        self.reader = new FileReader();
+
+        // Event triggered by finished file upload
+        // called upon completion of reader.readAsText
+        self.reader.onloadend = function(e) {
+            var data = self.reader.result.split("\n");
+            while(data.length > 0) {
+                var temp = data.pop();
+                if (temp.length > 0) {
+                    temp = temp.split(",");
+                    if (pF(temp[0]) && pF(temp[1])) {   // discard non-numbers
+                        var coord = self.getCoord(temp[0]);
+                        self.userData.push({
+                            "GeneID": temp[0],
+                            "Intensity": temp[1],
+                            "x": coord.x,
+                            "y": coord.y,
+                            "getRadius": function(intensity) {
+                                var radius = self.slope() * intensity * Math.pow(-1, (intensity < 0)) + self.yint();
+                                if (radius < 0) {
+                                    return 0;
+                                }
+                                return radius;
+                            },
+                            // TODO: add color bindings
+                            "getColor": function(intensity) {
+                                if (intensity >= 0) {
+                                    return self.actColor();
+                                }
+                                else {
+                                    return self.inhColor();
+                                }
+                            }
+                        });
+                    }
+                }
             }
-        }
-        return null;
+        };
+
+        // Event binding on View: input file-upload
+        self.onFileUpload = function() {
+            var upload_file = document.getElementById("csv_file").files;
+            self.reader.readAsText(upload_file[0]);
+        };
+
+        self.getCoord = function(geneid) {
+            for(i = 0; i < self.kinases.length; i++) {
+                if (self.kinases[i].GeneID == geneid) {
+                    return { 
+                        "x": self.kinases[i].xcoord,
+                        "y": self.kinases[i].ycoord
+                    };
+                }
+            }
+            return null;
+        };
+
     };
 
-};
+    KVM = new KinomeViewModel();
 
-KVM = new KinomeViewModel();
-
-ko.applyBindings(KVM);
+    ko.applyBindings(KVM);
 
 });
