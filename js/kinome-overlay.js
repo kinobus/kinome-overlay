@@ -20,7 +20,7 @@ $(document).ready(function() {
             KVM.yint(ui.value);
         }
     });
-    $("#opac").slider({ min: 0, max: 1, step: .1, value: .7,
+    $("#opac").slider({ min: 0.1, max: 1, step: .1, value: .7,
         slide: function(event, ui) {
             KVM.opac(ui.value);
         }
