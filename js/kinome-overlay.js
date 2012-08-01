@@ -20,6 +20,12 @@ $(document).ready(function() {
             KVM.yint(ui.value);
         }
     });
+    $("#opac").slider({ min: 0, max: 1, step: .1, value: .7,
+        slide: function(event, ui) {
+            KVM.opac(ui.value);
+        }
+    });
+
     $("#control").draggable({ handle: "p" });
     $("#tabs").tabs();
 
@@ -153,6 +159,8 @@ $(document).ready(function() {
         self.slope = ko.observable(5);
         self.yint = ko.observable(0);
 
+        // opacity
+        self.opac = ko.observable(.70);
 
         // Observable color values
         self.inhR = ko.observable(255);

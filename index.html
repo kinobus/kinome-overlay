@@ -45,6 +45,7 @@
                             <tr>
                                 <th>Inhibitor</th>
                                 <th>Activator</th>
+                                <th>Opacity</th>
                             </tr>
                             <tr>
                                 <td>
@@ -75,6 +76,18 @@
                                         </tr>
                                     </table>
                                 </td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td width="100px">
+                                                <div id="opac"></div>
+                                            </td>
+                                            <td width="40px" style="padding: 10px">
+                                                <label id="opac_text" data-bind="text: opac"></label>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
                             </tr>
                         </table>
                         </center>
@@ -93,7 +106,7 @@
                         <!--g class="group" id="anchor" data-bind="foreach: kinases">
                             <circle class="kinase" r="2" data-bind="attr: { cx: xcoord, cy: ycoord }" />
                         </g-->
-                        <g class="data" id="grp" data-bind="foreach: userData">
+                        <g class="data" id="grp" data-bind="foreach: userData, style: { fillOpacity: opac } ">
                             <circle class="data" id="pts" data-bind="attr: { cx: x, cy: y, r: getRadius(Intensity) }, style: { fill: getColor(Intensity) }" />
                         </g>
                     </svg>
