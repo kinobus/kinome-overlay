@@ -113,12 +113,39 @@ $(document).ready(function() {
     // Demo button
     $("#demo").button();
     $("#demo").click(function() {
-        KVM.userData.push({ GeneID: 157, Intensity: 20, x: 300, y: 400, getRadius: function(i) { return 15; }, getColor: function(i) { return "red"; } } );
-        KVM.userData.push({ GeneID: 157, Intensity: 20, x: 350, y: 100, getRadius: function(i) { return 30; }, getColor: function(i) { return "green"; } } );
-        KVM.userData.push({ GeneID: 157, Intensity: 20, x: 600, y: 600, getRadius: function(i) { return 20; }, getColor: function(i) { return "blue"; } } );
+        KVM.userData.destroyAll();
+        $.getJSON("demo.json", function(demoData) {
+            while(demoData.length > 0) {
+                var temp = demoData.pop();
+                var coord = KVM.getCoord(temp[0]);
+                KVM.userData.push({
+                    "GeneID": temp[0],
+                    "Intensity": temp[1],
+                    "x": coord.x,
+                    "y": coord.y,
+                    "getRadius": function(intensity) {
+                        var radius = KVM.slope() * intensity * Math.pow(-1, (intensity < 0)) + KVM.yint();
+                        if (radius < 0) {
+                            return 0;
+                        }
+                        return radius;
+                    },
+                    "getColor": function(intensity) {
+                        if (intensity >= 0) {
+                            return KVM.actColor();
+                        }
+                        else {
+                            return KVM.inhColor();
+                        }
+                    }
+                });
+            }
+        });
     });
 
-
+    /**
+     * ViewModel
+     */
     var KinomeViewModel = function() {
         var self = this;
 
@@ -185,6 +212,10 @@ $(document).ready(function() {
         // Event triggered by finished file upload
         // called upon completion of reader.readAsText
         self.reader.onloadend = function(e) {
+
+            // clear existing data
+            self.userData.destroyAll();
+
             var data = self.reader.result.split("\n");
             while(data.length > 0) {
                 var temp = data.pop();
@@ -204,7 +235,6 @@ $(document).ready(function() {
                                 }
                                 return radius;
                             },
-                            // TODO: add color bindings
                             "getColor": function(intensity) {
                                 if (intensity >= 0) {
                                     return self.actColor();
@@ -222,13 +252,15 @@ $(document).ready(function() {
         // Event binding on View: input file-upload
         self.onFileUpload = function() {
             var upload_file = document.getElementById("csv_file").files;
-            self.reader.readAsText(upload_file[0]);
+            for (i = 0; i < upload_file.length; i++) {
+                self.reader.readAsText(upload_file[i]);
+            }
         };
 
         self.getCoord = function(geneid) {
             for(i = 0; i < self.kinases.length; i++) {
                 if (self.kinases[i].GeneID == geneid) {
-                    return { 
+                    return {
                         "x": self.kinases[i].xcoord,
                         "y": self.kinases[i].ycoord
                     };
