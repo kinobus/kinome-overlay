@@ -26,7 +26,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#control").draggable({ handle: "p" });
+    //$("#control").draggable({ handle: "p" });
     $("#tabs").tabs();
 
     // Color picker

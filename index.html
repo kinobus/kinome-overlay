@@ -8,116 +8,109 @@
 
 <body>
     <!-- Title -->
-    <h1 id="title">Kinome Overlay</h1>
+    <div id="title" class="pos">
+        <h1 id="title">Kinome Overlay</h1>
+    </div>
 
-    <table>
-        <tr>
-            <td valign="top">
-                <div id="tabs" style="width: 100%">
-                    <ul>
-                        <li><a href="#upload">Upload Data</a></li>
-                        <li><a href="#scaling">Scaling</a></li>
-                        <li><a href="#color">Color</a></li>
-                        <li><a href="#demo">Demo</a></li>
-                    </ul>
-                    <div id="upload" class="tab">
-                        <input id="csv_file" type="file" accept="text/csv" multiple data-bind="event: { change: onFileUpload }" />
-                    </div>
-                    <div id="scaling" class="tab">
-                        <table border="0">
-                            <tr>
-                                <td><strong>Slope</strong></td>
-                                <td width="200px"><div class="slider" id="slope" data-bind="value: slope"></div></td>
-                                <td><input type="text" id="slope_text" data-bind="value: slope" maxlength="3" size="3"></input></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Y-intercept</strong></td>
-                                <td><div class="slider" id="yint" data-bind="value: yint"></div></td>
-                                <td><input type="text" id="yint_text" data-bind="value: yint" maxlength="3" size="3"></input></td>
-                            </tr>
-                        </table>
-                    </div>
+    <div id="control" class="pos">
+        <div id="tabs" style="width: 100%">
+            <ul>
+                <li><a href="#upload">Upload Data</a></li>
+                <li><a href="#scaling">Scaling</a></li>
+                <li><a href="#color">Color</a></li>
+                <li><a href="#demo">Demo</a></li>
+            </ul>
+            <div id="upload" class="tab">
+                <input id="csv_file" type="file" accept="text/csv" multiple data-bind="event: { change: onFileUpload }" />
+            </div>
+            <div id="scaling" class="tab">
+                <table border="0">
+                    <tr>
+                        <td><strong>Slope</strong></td>
+                        <td width="200px"><div class="slider" id="slope" data-bind="value: slope"></div></td>
+                        <td><input type="text" id="slope_text" data-bind="value: slope" maxlength="3" size="3"></input></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Y-intercept</strong></td>
+                        <td><div class="slider" id="yint" data-bind="value: yint"></div></td>
+                        <td><input type="text" id="yint_text" data-bind="value: yint" maxlength="3" size="3"></input></td>
+                    </tr>
+                </table>
+            </div>
 
-                    <!-- Color Picker -->
-                    <div id="color" class="tab">
-                        <center>
-                        <table>
-                            <tr>
-                                <th>Inhibitor</th>
-                                <th>Activator</th>
-                                <th>Opacity</th>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <table>
-                                        <tr>
-                                            <td><div id="red" class="inh" data-bind="value: inhR"></div></td>
-                                            <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="inh" data-bind="style: { backgroundColor: inhColor }"></div></td>
-                                        </tr>
-                                        <tr>
-                                            <td><div id="green" class="inh" data-bind="value: inhG"></div></td>
-                                        </tr>
-                                        <tr>
-                                            <td><div id="blue" class="inh" data-bind="value: inhB"></div></td>
-                                        </tr>
-                                    </table>
-                                </td>
-                                <td>
-                                    <table>
-                                        <tr>
-                                            <td><div id="red" class="act" data-bind="value: actR"></div></td>
-                                            <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="act" data-bind="style: { backgroundColor: actColor }"></div></td>
-                                        </tr>
-                                        <tr>
-                                            <td><div id="green" class="act" data-bind="value: actG"></div></td>
-                                        </tr>
-                                        <tr>
-                                            <td><div id="blue" class="act" data-bind="value: actB"></div></td>
-                                        </tr>
-                                    </table>
-                                </td>
-                                <td>
-                                    <table>
-                                        <tr>
-                                            <td width="100px">
-                                                <div id="opac"></div>
-                                            </td>
-                                            <td width="40px" style="padding: 10px">
-                                                <label id="opac_text" data-bind="text: opac"></label>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                        </center>
-                    </div>
-                    <!-- Demo -->
-                    <div id="demo" class="tab">
-                        <button id="demo">Plot Demo Data</button>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div id="kinomeDiv" style="position: static; left: 10px">
-                    <svg id="kinome">
-                        <!--g class="group" id="anchor" data-bind="foreach: kinases">
-                            <circle class="kinase" r="2" data-bind="attr: { cx: xcoord, cy: ycoord }" />
-                        </g-->
-                        <g class="data" id="grp" data-bind="foreach: userData, style: { fillOpacity: opac } ">
-                            <circle class="data" id="pts" data-bind="attr: { cx: x, cy: y, r: getRadius(Intensity) }, style: { fill: getColor(Intensity) }" />
-                        </g>
-                    </svg>
-                </div>
-            </td>
-        </tr>
-    </table>
+            <!-- Color Picker -->
+            <div id="color" class="tab">
+                <center>
+                <table>
+                    <tr>
+                        <th>Inhibitor</th>
+                        <th>Activator</th>
+                        <th>Opacity</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td><div id="red" class="inh" data-bind="value: inhR"></div></td>
+                                    <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="inh" data-bind="style: { backgroundColor: inhColor }"></div></td>
+                                </tr>
+                                <tr>
+                                    <td><div id="green" class="inh" data-bind="value: inhG"></div></td>
+                                </tr>
+                                <tr>
+                                    <td><div id="blue" class="inh" data-bind="value: inhB"></div></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td><div id="red" class="act" data-bind="value: actR"></div></td>
+                                    <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="act" data-bind="style: { backgroundColor: actColor }"></div></td>
+                                </tr>
+                                <tr>
+                                    <td><div id="green" class="act" data-bind="value: actG"></div></td>
+                                </tr>
+                                <tr>
+                                    <td><div id="blue" class="act" data-bind="value: actB"></div></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td width="100px">
+                                        <div id="opac"></div>
+                                    </td>
+                                    <td width="40px" style="padding: 10px">
+                                        <label id="opac_text" data-bind="text: opac"></label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                </center>
+            </div>
+            <!-- Demo -->
+            <div id="demo" class="tab">
+                <button id="demo">Plot Demo Data</button>
+            </div>
+        </div>
+    </div>
 
-    <p class="footer">
+    <div id="kinomeDiv" class="pos">
+        <svg id="kinome">
+            <g class="data" id="grp" data-bind="foreach: userData, style: { fillOpacity: opac } ">
+                <circle class="data" id="pts" data-bind="attr: { cx: x, cy: y, r: getRadius(Intensity) }, style: { fill: getColor(Intensity) }" />
+            </g>
+        </svg>
+    </div>
+
+
+    <div id="footer" class="pos">
         Copyright 2012 &copy; Joseph Lee, Nick Robin
-    </p>
+    </div>
 
     <!-- Necessary JS Libraries -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
