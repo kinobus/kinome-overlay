@@ -198,22 +198,27 @@ $(document).ready(function() {
         });
 
         // Synchronously get kinase coordinates
-        self.kinases = [];
+        self.kinases = ko.observableArray([]);
         $.ajax({
             async: false,
             dataType: "json",
             url: "kotable.json",
             success: function(data) {
-                self.kinases = data;
-                for(i = 0; i < self.kinases.length; i++) {
-                    self.kinases[i].xcoord /= 4;
-                    self.kinases[i].ycoord /= 4;
+                while(data.length > 0) {
+                    var temp = data.pop();
+                    temp.xcoord /= 4;
+                    temp.ycoord /= 4;
+                    self.kinases.push(temp);
                 }
+                // self.kinases = data;
+                // for(i = 0; i < self.kinases.length; i++) {
+                //     self.kinases[i].xcoord /= 4;
+                //     self.kinases[i].ycoord /= 4;
+                // }
             }
         });
 
-
-            /* Upload file handle */
+        /* Upload file handle */
         self.userData = ko.observableArray();
         self.reader = new FileReader();
 
@@ -266,11 +271,11 @@ $(document).ready(function() {
         };
 
         self.getCoord = function(geneid) {
-            for(i = 0; i < self.kinases.length; i++) {
-                if (self.kinases[i].GeneID == geneid) {
+            for(i = 0; i < self.kinases().length; i++) {
+                if (self.kinases()[i].GeneID == geneid) {
                     return {
-                        "x": self.kinases[i].xcoord,
-                        "y": self.kinases[i].ycoord
+                        "x": self.kinases()[i].xcoord,
+                        "y": self.kinases()[i].ycoord
                     };
                 }
             }
