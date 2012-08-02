@@ -43,8 +43,10 @@
 }
 
 .kinase {
-    stroke: 1;
+    stroke: black;
+    stroke-width: .4;
     fill: white;
+    fill-opacity: .5;
 }
 
 #red, #green, #blue {
