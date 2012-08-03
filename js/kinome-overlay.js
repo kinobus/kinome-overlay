@@ -22,7 +22,7 @@ $(document).ready(function() {
             KVM.yint(ui.value);
         }
     });
-    $("#opac").slider({ min: 0.1, max: 1, step: .1, value: .7,
+    $("#opac").slider({ min: 0.1, max: 1, step: .1, value: .8,
         slide: function(event, ui) {
             KVM.opac(ui.value);
         }
@@ -44,11 +44,12 @@ $(document).ready(function() {
         });
         return hex.join( "" ).toUpperCase();
     }
+    // inhibitors
     $(".inh#red").slider({
         orientation: "horizontal",
         range: "min",
         max: 255,
-        value: 255,
+        value: 57,
         slide: function(event, ui) {
             KVM.inhR(ui.value);
         },
@@ -60,7 +61,7 @@ $(document).ready(function() {
         orientation: "horizontal",
         range: "min",
         max: 255,
-        value: 0,
+        value: 39,
         slide: function(event, ui) {
             KVM.inhG(ui.value);
         },
@@ -72,7 +73,7 @@ $(document).ready(function() {
         orientation: "horizontal",
         range: "min",
         max: 255,
-        value: 0,
+        value: 91,
         slide: function(event, ui) {
             KVM.inhB(ui.value);
         },
@@ -80,11 +81,12 @@ $(document).ready(function() {
             KVM.inhB(ui.value);
         }
     });
+    //activators
     $(".act#red").slider({
         orientation: "horizontal",
         range: "min",
         max: 255,
-        value: 0,
+        value: 199,
         slide: function(event, ui) {
             KVM.actR(ui.value);
         },
@@ -96,7 +98,7 @@ $(document).ready(function() {
         orientation: "horizontal",
         range: "min",
         max: 255,
-        value: 255,
+        value: 153,
         slide: function(event, ui) {
             KVM.actG(ui.value);
         },
@@ -139,15 +141,15 @@ $(document).ready(function() {
         self.yint = ko.observable(0);
 
         // opacity
-        self.opac = ko.observable(.70);
+        self.opac = ko.observable(.8);
 
         // Observable color values
-        self.inhR = ko.observable(255);
-        self.inhG = ko.observable(0);
-        self.inhB = ko.observable(0);
+        self.inhR = ko.observable(57);
+        self.inhG = ko.observable(39);
+        self.inhB = ko.observable(91);
 
-        self.actR = ko.observable(0);
-        self.actG = ko.observable(255);
+        self.actR = ko.observable(199);
+        self.actG = ko.observable(153);
         self.actB = ko.observable(0);
 
 

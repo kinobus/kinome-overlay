@@ -49,6 +49,12 @@
     fill-opacity: .5;
 }
 
+.data#pts {
+    stroke: white;
+    stroke-width: 1;
+    stroke-opacity: .5;
+}
+
 #red, #green, #blue {
     float: left;
     clear: left;
