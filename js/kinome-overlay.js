@@ -8,6 +8,8 @@
 
 // Heavily used shortcut
 pF = parseFloat;
+abs = Math.abs;
+pow = Math.pow;
 
 $(document).ready(function() {
     $("#slope").slider({ min: 0, max: 10, step: 1, value: 5,
@@ -227,7 +229,7 @@ $(document).ready(function() {
 
         // Return radius based on intensity
         self.getRadius = function (intensity) {
-            var radius = self.slope() * intensity * (Math.pow(-1, (intensity < 0))) + self.yint();
+            var radius = self.slope() * intensity * (pow(-1, (intensity < 0))) + self.yint();
             return radius >= 0 ? radius : 0;
         };
 
@@ -259,6 +261,13 @@ $(document).ready(function() {
         // to an array of 2-element arrays:
         // [ [ GeneID, intensity-value ], ... ]
         self.applyData = function (inputData) {
+            // sort inputData so smaller radii are visible
+            inputData.sort(function(left, right) {
+                var l = abs(left[1]);
+                var r = abs(right[1]);
+                return l == r ? 0 : (l < r ? -1 : 1);
+            });
+            console.log(inputData);
             while (inputData.length > 0) {
                 var temp = inputData.pop();
                 for (i = 0; i < self.kinases().length; i++) {
