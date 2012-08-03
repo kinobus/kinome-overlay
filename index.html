@@ -106,10 +106,10 @@
     <div id="kinomeDiv" class="pos">
         <svg id="kinome">
             <g id="kinase_grp" data-bind="foreach: kinases">
-            <circle class="kinase" data-bind="attr: { cx: xcoord, cy: ycoord, r: 4, id: GeneID }" />
+            <circle class="kinase" data-bind="attr: { cx: x, cy: y, r: 4, id: GeneID }" />
             </g>
             <g class="data" id="grp" data-bind="foreach: userData, style: { fillOpacity: opac } ">
-                <circle class="data" id="pts" data-bind="attr: { cx: x, cy: y, r: getRadius(Intensity) }, style: { fill: getColor(Intensity) }" />
+                <circle class="data" id="pts" data-bind="attr: { cx: x, cy: y, r: $root.getRadius(Intensity) }, style: { fill: $root.getColor(Intensity) }" />
             </g>
         </svg>
     </div>

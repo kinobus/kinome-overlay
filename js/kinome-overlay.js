@@ -26,7 +26,6 @@ $(document).ready(function() {
         }
     });
 
-    //$("#control").draggable({ handle: "p" });
     $("#tabs").tabs();
 
     // Color picker
@@ -121,35 +120,13 @@ $(document).ready(function() {
     $("#demo").click(function() {
         KVM.userData.destroyAll();
         $.getJSON("demo.json", function(demoData) {
-            while(demoData.length > 0) {
-                var temp = demoData.pop();
-                var coord = KVM.getCoord(temp[0]);
-                KVM.userData.push({
-                    "GeneID": temp[0],
-                    "Intensity": temp[1],
-                    "x": coord.x,
-                    "y": coord.y,
-                    "getRadius": function(intensity) {
-                        var radius = KVM.slope() * intensity * Math.pow(-1, (intensity < 0)) + KVM.yint();
-                        if (radius < 0) {
-                            return 0;
-                        }
-                        return radius;
-                    },
-                    "getColor": function(intensity) {
-                        if (intensity >= 0) {
-                            return KVM.actColor();
-                        }
-                        else {
-                            return KVM.inhColor();
-                        }
-                    }
-                });
-            }
+            KVM.applyData(demoData);
         });
     });
 
+
     /**
+     * Kinome
      * ViewModel
      */
     var KinomeViewModel = function() {
@@ -206,61 +183,17 @@ $(document).ready(function() {
             success: function(data) {
                 while(data.length > 0) {
                     var temp = data.pop();
-                    temp.xcoord /= 4;
-                    temp.ycoord /= 4;
+                    temp.x /= 4;
+                    temp.y /= 4;
+                    temp.Intensity = 0;
                     self.kinases.push(temp);
                 }
-                // self.kinases = data;
-                // for(i = 0; i < self.kinases.length; i++) {
-                //     self.kinases[i].xcoord /= 4;
-                //     self.kinases[i].ycoord /= 4;
-                // }
             }
         });
 
         /* Upload file handle */
         self.userData = ko.observableArray();
         self.reader = new FileReader();
-
-        // Event triggered by finished file upload
-        // called upon completion of reader.readAsText
-        self.reader.onloadend = function(e) {
-
-            // clear existing data
-            self.userData.destroyAll();
-
-            var data = self.reader.result.split("\n");
-            while(data.length > 0) {
-                var temp = data.pop();
-                if (temp.length > 0) {
-                    temp = temp.split(",");
-                    if (pF(temp[0]) && pF(temp[1])) {   // discard non-numbers
-                        var coord = self.getCoord(temp[0]);
-                        self.userData.push({
-                            "GeneID": temp[0],
-                            "Intensity": temp[1],
-                            "x": coord.x,
-                            "y": coord.y,
-                            "getRadius": function(intensity) {
-                                var radius = self.slope() * intensity * Math.pow(-1, (intensity < 0)) + self.yint();
-                                if (radius < 0) {
-                                    return 0;
-                                }
-                                return radius;
-                            },
-                            "getColor": function(intensity) {
-                                if (intensity >= 0) {
-                                    return self.actColor();
-                                }
-                                else {
-                                    return self.inhColor();
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        };
 
         // Event binding on View: input file-upload
         self.onFileUpload = function() {
@@ -270,16 +203,71 @@ $(document).ready(function() {
             }
         };
 
-        self.getCoord = function(geneid) {
-            for(i = 0; i < self.kinases().length; i++) {
-                if (self.kinases()[i].GeneID == geneid) {
-                    return {
-                        "x": self.kinases()[i].xcoord,
-                        "y": self.kinases()[i].ycoord
-                    };
+        // Event triggered by finished file upload
+        // called upon completion of reader.readAsText
+        self.reader.onloadend = function(e) {
+
+            // parse input data
+            var data = self.reader.result.split("\n");
+            for (i = 0; i < data.length; i++) {
+                data[i] = data[i].split(",");
+            }
+            self.applyData(data);
+        };
+
+        // Return Kinase object by GeneID
+        self.getKinaseById = function (geneid) {
+            for (i = 0; i < self.kinases().length; i++) {
+                if (self.kinases()[i].GeneID = geneid) {
+                    return self.kinase()[i];
                 }
             }
-            return null;
+            return undefined;
+        };
+
+        // Return radius based on intensity
+        self.getRadius = function (intensity) {
+            var radius = self.slope() * intensity * (Math.pow(-1, (intensity < 0))) + self.yint();
+            return radius >= 0 ? radius : 0;
+        };
+
+        // obtain approriate color for intensity
+        self.getColor = function (intensity) {
+            if (intensity >= 0) {
+                return self.actColor();
+            }
+            return self.inhColor();
+        };
+
+        // parse data
+        self.parseData = function (inputData) {
+
+        };
+
+        // purge all intensity data from kinases
+        self.clearData = function () {
+            for (i = 0; i < self.kinases().length; i++) {
+                self.kinases()[i].Intensity = 0;
+            }
+            self.userData.destroyAll();
+        };
+
+
+        // parse, plot user uploaded data
+        // uses closure of self.userData
+        // self.userData should be sufficiently parsed
+        // to an array of 2-element arrays:
+        // [ [ GeneID, intensity-value ], ... ]
+        self.applyData = function (inputData) {
+            while (inputData.length > 0) {
+                var temp = inputData.pop();
+                for (i = 0; i < self.kinases().length; i++) {
+                    if (self.kinases()[i].GeneID == temp[0]) {
+                        self.kinases()[i].Intensity = temp[1];
+                        self.userData.push(self.kinases()[i]);
+                    }
+                }
+            }
         };
 
     };
