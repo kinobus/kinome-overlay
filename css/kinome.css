@@ -55,6 +55,11 @@
     stroke-opacity: .5;
 }
 
+.data#label {
+    font-family: sans-serif;
+    fill: black;
+}
+
 #red, #green, #blue {
     float: left;
     clear: left;

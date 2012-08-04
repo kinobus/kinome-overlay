@@ -15,6 +15,11 @@ $(document).ready(function() {
     $("#slope").slider({ min: 0, max: 10, step: 1, value: 5,
         slide: function(event, ui) {
             KVM.slope(ui.value);
+            KVM.force.resume();
+            d3.selectAll(".data#pts")
+                .attr("r", function(d) {
+                    return KVM.getRadius(d.Intensity);
+                });
         }
     });
     $("#yint").slider({ min: -100, max: 100, step: 1, value: 1,
@@ -135,6 +140,8 @@ $(document).ready(function() {
      */
     var KinomeViewModel = function() {
         var self = this;
+        self.width = ko.observable(825);
+        self.height = ko.observable(975);
 
         // radius scaling values
         self.slope = ko.observable(5);
@@ -151,6 +158,10 @@ $(document).ready(function() {
         self.actR = ko.observable(199);
         self.actG = ko.observable(153);
         self.actB = ko.observable(0);
+
+        // svg elements
+        self.svg = d3.select("#kinome");
+        self.dataGrp = d3.select(".data#grp");
 
 
         // Color picker
@@ -190,6 +201,7 @@ $(document).ready(function() {
                     temp.x /= 4;
                     temp.y /= 4;
                     temp.Intensity = 0;
+                    temp.fixed = true;
                     self.kinases.push(temp);
                 }
             }
@@ -243,11 +255,6 @@ $(document).ready(function() {
             return self.inhColor();
         };
 
-        // parse data
-        self.parseData = function (inputData) {
-
-        };
-
         // purge all intensity data from kinases
         self.clearData = function () {
             for (i = 0; i < self.kinases().length; i++) {
@@ -269,7 +276,6 @@ $(document).ready(function() {
                 var r = abs(right[1]);
                 return l == r ? 0 : (l < r ? -1 : 1);
             });
-            console.log(inputData);
             while (inputData.length > 0) {
                 var temp = inputData.pop();
                 for (i = 0; i < self.kinases().length; i++) {
@@ -279,8 +285,121 @@ $(document).ready(function() {
                     }
                 }
             }
+            // plot data pts
+            // self.dataGrp.selectAll("circle.data#pts")
+            //     .data(self.userData())
+            //     .enter()
+            //     .append("circle")
+            //     .attr("class", "data")
+            //     .attr("id", "pts")
+            //     .attr("cx", function(d) { return d.x; })
+            //     .attr("cy", function(d) { return d.y; })
+            //     .attr("r", function(d) {
+            //         return self.getRadius(d.Intensity);
+            //     })
+            //     .attr("fill", function(d) {
+            //         return self.getColor(d.Intensity);
+            //     });
+
+            self.setForce();
         };
 
+        /**
+         * LABELS USING FORCES
+         * Plot collision detecting labels using d3 force layout
+         */
+
+        self.setForce = function() {
+            // establish data
+            self.label = {};
+            self.label.nodes = [];
+            self.label.links = [];
+            for (i = 0; i < self.userData().length; i++) {
+                var temp = self.userData()[i];
+                self.label.nodes.push(temp);
+                self.label.nodes.push({
+                    "GeneID": temp.GeneID,
+                    "KinaseName": temp.KinaseName,
+                    "fixed": false,
+                    "x": temp.x,
+                    "y": temp.y
+                });
+            }
+            for (i = 0; i < self.userData().length; i++) {
+                self.label.links.push({
+                    "source": i * 2,
+                    "target": i * 2 + 1,
+                    "weight": 1
+                });
+            }
+
+            // instantiate force
+            self.force = d3.layout.force()
+                .nodes(self.label.nodes)
+                .links(self.label.links)
+                .size([ self.width(), self.height() ])
+                .gravity(0)
+                .linkDistance(0)
+                .linkStrength(10)
+                .charge(-200)
+                .start();
+
+            // render nodes, links
+            self.forces = {};
+            
+            self.forces.links = self.dataGrp.selectAll("line.link")
+                .data(self.force.links())
+                .enter()
+                .append("svg:line")
+                .attr("class", "link")
+                .style("stroke", "#000000")
+                .style("stroke-width", 0);
+
+            self.forces.nodes = self.dataGrp.selectAll("g.node")
+                .data(self.force.nodes())
+                .enter()
+                .append("svg:g")
+                .attr("class", "node");
+            self.forces.nodes.append("svg:circle")
+                .attr("r", function(d, i) {
+                    return i % 2 == 0 ? self.getRadius(d.Intensity) : 0;
+                }).attr("class", "data").attr("id", "pts")
+                .style("fill", function(d) {
+                    return self.getColor(d.Intensity);
+                })
+                .style("fill-opacity", self.opac());
+                    
+            self.forces.nodes.append("svg:text").text(function(d, i) {
+                return i % 2 == 0 ? "" : d.KinaseName;
+            }).attr("class", "data").attr("id", "label");
+            
+            
+
+
+            self.updateLink = function() {
+                this.attr("x1", function(d) {
+                    return d.source.x;
+                }).attr("y1", function(d) {
+                    return d.source.y;
+                }).attr("x2", function(d) {
+                    return d.target.x;
+                }).attr("y2", function(d) {
+                    return d.target.y;
+                });
+            };
+
+            self.updateNode = function() {
+                this.attr("transform", function(d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
+            };
+
+            self.force.on("tick", function() {
+                self.forces.nodes.call(self.updateNode);
+                self.forces.links.call(self.updateLink);
+            });
+
+        };
     };
 
     KVM = new KinomeViewModel();
