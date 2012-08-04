@@ -15,21 +15,24 @@ $(document).ready(function() {
     $("#slope").slider({ min: 0, max: 10, step: 1, value: 5,
         slide: function(event, ui) {
             KVM.slope(ui.value);
-            KVM.force.resume();
-            d3.selectAll(".data#pts")
-                .attr("r", function(d) {
-                    return KVM.getRadius(d.Intensity);
-                });
+            KVM.setRadii();
+            KVM.force.resume()
         }
     });
     $("#yint").slider({ min: -100, max: 100, step: 1, value: 1,
         slide: function(event, ui) {
             KVM.yint(ui.value);
+            KVM.setRadii();
+            KVM.force.resume()
         }
     });
     $("#opac").slider({ min: 0.1, max: 1, step: .1, value: .8,
         slide: function(event, ui) {
             KVM.opac(ui.value);
+            d3.selectAll(".data#pts")
+                .style("fill-opacity", function(d) {
+                    return ui.value;
+                });
         }
     });
 
@@ -57,9 +60,11 @@ $(document).ready(function() {
         value: 57,
         slide: function(event, ui) {
             KVM.inhR(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.inhR(ui.value);
+            KVM.setColors();
         }
     });
     $(".inh#green").slider({
@@ -69,9 +74,11 @@ $(document).ready(function() {
         value: 39,
         slide: function(event, ui) {
             KVM.inhG(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.inhG(ui.value);
+            KVM.setColors();
         }
     });
     $(".inh#blue").slider({
@@ -81,9 +88,11 @@ $(document).ready(function() {
         value: 91,
         slide: function(event, ui) {
             KVM.inhB(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.inhB(ui.value);
+            KVM.setColors();
         }
     });
     //activators
@@ -94,9 +103,11 @@ $(document).ready(function() {
         value: 199,
         slide: function(event, ui) {
             KVM.actR(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.actR(ui.value);
+            KVM.setColors();
         }
     });
     $(".act#green").slider({
@@ -106,9 +117,11 @@ $(document).ready(function() {
         value: 153,
         slide: function(event, ui) {
             KVM.actG(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.actG(ui.value);
+            KVM.setColors();
         }
     });
     $(".act#blue").slider({
@@ -118,9 +131,11 @@ $(document).ready(function() {
         value: 0,
         slide: function(event, ui) {
             KVM.actB(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.actB(ui.value);
+            KVM.setColors();
         }
     });
 
@@ -255,6 +270,24 @@ $(document).ready(function() {
             return self.inhColor();
         };
 
+        // change all radii accordingly
+        // use radius scaling events for data points
+        self.setRadii = function() {
+            d3.selectAll(".data#pts")
+                .attr("r", function(d) {
+                    return self.getRadius(d.Intensity);
+                });
+        };
+
+        // change all colors accordingly
+        // use color changing events for data points
+        self.setColors = function() {
+            d3.selectAll(".data#pts")
+                .style("fill", function(d) {
+                    return self.getColor(d.Intensity);
+                });
+        };
+
         // purge all intensity data from kinases
         self.clearData = function () {
             for (i = 0; i < self.kinases().length; i++) {
@@ -285,22 +318,7 @@ $(document).ready(function() {
                     }
                 }
             }
-            // plot data pts
-            // self.dataGrp.selectAll("circle.data#pts")
-            //     .data(self.userData())
-            //     .enter()
-            //     .append("circle")
-            //     .attr("class", "data")
-            //     .attr("id", "pts")
-            //     .attr("cx", function(d) { return d.x; })
-            //     .attr("cy", function(d) { return d.y; })
-            //     .attr("r", function(d) {
-            //         return self.getRadius(d.Intensity);
-            //     })
-            //     .attr("fill", function(d) {
-            //         return self.getColor(d.Intensity);
-            //     });
-
+            
             self.setForce();
         };
 
@@ -339,9 +357,11 @@ $(document).ready(function() {
                 .links(self.label.links)
                 .size([ self.width(), self.height() ])
                 .gravity(0)
-                .linkDistance(0)
-                .linkStrength(10)
+                .linkDistance(10)
+                .linkStrength(8)
                 .charge(-200)
+                .alpha(.05)
+                .friction(.1)
                 .start();
 
             // render nodes, links
@@ -363,15 +383,30 @@ $(document).ready(function() {
             self.forces.nodes.append("svg:circle")
                 .attr("r", function(d, i) {
                     return i % 2 == 0 ? self.getRadius(d.Intensity) : 0;
-                }).attr("class", "data").attr("id", "pts")
+                })
+                // only set class/id to valid circles (even)
+                .attr("class", function(d, i) {
+                    return i % 2 == 0 ? "data" : "dummy";
+                })
+                .attr("id", function(d, i) {
+                    return i % 2 == 0 ? "pts" : "dummy";
+                })
                 .style("fill", function(d) {
                     return self.getColor(d.Intensity);
                 })
                 .style("fill-opacity", self.opac());
+
                     
-            self.forces.nodes.append("svg:text").text(function(d, i) {
-                return i % 2 == 0 ? "" : d.KinaseName;
-            }).attr("class", "data").attr("id", "label");
+            self.forces.nodes.append("svg:text")
+                .text(function(d, i) {
+                    return i % 2 == 0 ? "" : d.KinaseName;
+                })
+                // only set class/id to valid text labels (odd)
+                .attr("class", function(d, i) {
+                    return i % 2 == 1 ? "data" : "dummy";
+                }).attr("id", function(d, i) {
+                    return i % 2 == 1 ? "label" : "dummy";
+                });
             
             
 
