@@ -318,8 +318,7 @@ $(document).ready(function() {
                     }
                 }
             }
-            
-            self.setForce();
+            self.setForce();    // run force layout
         };
 
         /**
@@ -332,9 +331,13 @@ $(document).ready(function() {
             self.label = {};
             self.label.nodes = [];
             self.label.links = [];
+            // shallow copies of userData
+            for (i = 0; i < self.userData().length; i++) {
+                self.label.nodes.push(self.userData()[i]);
+            }
+            // label info
             for (i = 0; i < self.userData().length; i++) {
                 var temp = self.userData()[i];
-                self.label.nodes.push(temp);
                 self.label.nodes.push({
                     "GeneID": temp.GeneID,
                     "KinaseName": temp.KinaseName,
@@ -345,8 +348,8 @@ $(document).ready(function() {
             }
             for (i = 0; i < self.userData().length; i++) {
                 self.label.links.push({
-                    "source": i * 2,
-                    "target": i * 2 + 1,
+                    "source": i,
+                    "target": i + self.userData().length,
                     "weight": 1
                 });
             }
@@ -366,7 +369,7 @@ $(document).ready(function() {
 
             // render nodes, links
             self.forces = {};
-            
+
             self.forces.links = self.dataGrp.selectAll("line.link")
                 .data(self.force.links())
                 .enter()
@@ -382,30 +385,30 @@ $(document).ready(function() {
                 .attr("class", "node");
             self.forces.nodes.append("svg:circle")
                 .attr("r", function(d, i) {
-                    return i % 2 == 0 ? self.getRadius(d.Intensity) : 0;
+                    return i <= self.userData().length ?
+                        self.getRadius(d.Intensity) : 0;
                 })
                 // only set class/id to valid circles (even)
                 .attr("class", function(d, i) {
-                    return i % 2 == 0 ? "data" : "dummy";
+                    return i <= self.userData().length ? "data" : "dummy";
                 })
                 .attr("id", function(d, i) {
-                    return i % 2 == 0 ? "pts" : "dummy";
+                    return i <= self.userData().length ? "pts" : "dummy";
                 })
                 .style("fill", function(d) {
                     return self.getColor(d.Intensity);
                 })
                 .style("fill-opacity", self.opac());
 
-                    
             self.forces.nodes.append("svg:text")
                 .text(function(d, i) {
-                    return i % 2 == 0 ? "" : d.KinaseName;
+                    return i <= self.userData().length ? "" : d.KinaseName;
                 })
                 // only set class/id to valid text labels (odd)
                 .attr("class", function(d, i) {
-                    return i % 2 == 1 ? "data" : "dummy";
+                    return i <= self.userData().length ? "dummy" : "data";
                 }).attr("id", function(d, i) {
-                    return i % 2 == 1 ? "label" : "dummy";
+                    return i <= self.userData().length ? "dummy" : "label";
                 });
             
             
