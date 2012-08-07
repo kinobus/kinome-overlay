@@ -377,23 +377,25 @@ $(document).ready(function() {
                 .style("stroke", "#000000")
                 .style("stroke-width", 0);
 
-            self.forces.nodes = self.dataGrp.selectAll("g.node")
+            self.forces.nodes = self.dataGrp.selectAll("g")
                 .data(self.force.nodes())
                 .enter()
                 .append("svg:g")
-                .attr("class", "node");
+                .attr("class", function (d, i) {
+                    return i <= self.userData().length - 1 ? "node" : "label";
+                });
 
-                            self.forces.nodes.append("svg:circle")
+            self.forces.nodes.append("svg:circle")
                 .attr("r", function(d, i) {
-                    return i <= self.userData().length ?
+                    return i <= self.userData().length - 1 ?
                         self.getRadius(d.Intensity) : 0;
                 })
                 // only set class/id to valid circles (even)
                 .attr("class", function(d, i) {
-                    return i <= self.userData().length ? "data" : "dummy";
+                    return i <= self.userData().length - 1 ? "data" : "dummy";
                 })
                 .attr("id", function(d, i) {
-                    return i <= self.userData().length ? "pts" : "dummy";
+                    return i <= self.userData().length - 1 ? "pts" : "dummy";
                 })
                 .style("fill", function(d) {
                     return self.getColor(d.Intensity);
@@ -402,17 +404,17 @@ $(document).ready(function() {
 
             self.forces.nodes.append("svg:text")
                 .text(function(d, i) {
-                    return i <= self.userData().length ? "" : d.KinaseName;
+                    return i <= self.userData().length - 1 ? "" : d.KinaseName;
                 })
                 // only set class/id to valid text labels (odd)
                 .attr("class", function(d, i) {
-                    return i <= self.userData().length ? "dummy" : "data";
+                    return i <= self.userData().length - 1 ? "dummy" : "data";
                 }).attr("id", function(d, i) {
-                    return i <= self.userData().length ? "dummy" : "label";
+                    return i <= self.userData().length - 1 ? "dummy" : "label";
                 });
 
                 // todo: fix this to work on groups only w/text
-                d3.selectAll("g.node")
+                d3.selectAll("g.label")
                 .call(self.force.drag)
                 .on("mousedown", function(d) {
                     console.log(d);
