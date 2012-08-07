@@ -140,14 +140,15 @@ $(document).ready(function() {
     });
 
     // Demo button
+    // SigmaLBarMean Demo
     $("#demo").button();
     $("#demo").click(function() {
-        KVM.userData.destroyAll();
-        $.getJSON("demo.json", function(demoData) {
+        $.getJSON("data/SigmaLBarMean.json", function(demoData) {
+            KVM.clearData();
             KVM.applyData(demoData);
         });
     });
-
+ 
 
     /**
      * Kinome
@@ -290,6 +291,7 @@ $(document).ready(function() {
 
         // purge all intensity data from kinases
         self.clearData = function () {
+            self.userData.removeAll();
             for (i = 0; i < self.kinases().length; i++) {
                 self.kinases()[i].Intensity = 0;
             }
@@ -359,12 +361,9 @@ $(document).ready(function() {
                 .nodes(self.label.nodes)
                 .links(self.label.links)
                 .size([ self.width(), self.height() ])
-                .gravity(0)
-                .linkDistance(10)
+                .linkDistance(0)
                 .linkStrength(8)
-                .charge(-200)
-                .alpha(.05)
-                .friction(.1)
+                .charge(-600)
                 .start();
 
             // render nodes, links
@@ -410,8 +409,6 @@ $(document).ready(function() {
                 }).attr("id", function(d, i) {
                     return i <= self.userData().length ? "dummy" : "label";
                 });
-            
-            
 
 
             self.updateLink = function() {
@@ -428,13 +425,13 @@ $(document).ready(function() {
 
             self.updateNode = function() {
                 this.attr("transform", function(d) {
-                    return "translate(" + d.x + "," + d.y + ")";
+                    return "translate(" + d.x + ", " + d.y + ")";
                 });
             };
 
             self.force.on("tick", function() {
-                self.forces.nodes.call(self.updateNode);
                 self.forces.links.call(self.updateLink);
+                self.forces.nodes.call(self.updateNode);
             });
 
         };
