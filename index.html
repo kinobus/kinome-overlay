@@ -5,6 +5,12 @@
     <link href="css/custom-theme/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" />
     <link href="css/kinome.css" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/ico" href="kinome-overlay.ico" />
+
+    <script src="js/jquery-1.7.2.js"></script>
+    <script src="js/jquery-ui-1.8.22.custom.min.js"></script>
+    <script src="js/knockout-2.1.0.js"></script>
+    <script src="js/d3.v2.js"></script>
+
     </head>
 
 <body>
@@ -115,9 +121,6 @@
             <circle class="kinase" data-bind="attr: { cx: x, cy: y, r: 4, id: GeneID }" />
             </g>
             <g class="data" id="grp"></g>
-            <!--g class="data" id="grp" data-bind="foreach: userData, style: { fillOpacity: opac } ">
-                <circle class="data" id="pts" data-bind="attr: { cx: x, cy: y, r: $root.getRadius(Intensity) }, style: { fill: $root.getColor(Intensity) }" />
-            </g-->
         </svg>
     </div>
 
@@ -127,10 +130,6 @@
     </div>
 
     <!-- Necessary JS Libraries -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script src="js/jquery-ui-1.8.22.custom.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.1.0/knockout-min.js"></script>
-    <script src="http://d3js.org/d3.v2.js"></script>
     <script src="js/kinome-overlay.js"></script>
 </body>
 
