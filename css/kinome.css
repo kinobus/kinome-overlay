@@ -1,4 +1,5 @@
 #title {
+    text-align: center;
     font-size: 80;
     font-family: sans-serif;
     font-weight: 700;
@@ -38,7 +39,7 @@
 #kinome {
     width: 825px;
     height: 975px;
-/*    background-image: url(../img/KinomePoster.png); */
+    background-image: url(../img/KinomePoster.png);
     background-size: 100% 100%;
 }
 
@@ -60,7 +61,7 @@
     fill: black;
 }
 
-.node text {
+.label {
     cursor: move;
 }
 
