@@ -38,7 +38,7 @@
 #kinome {
     width: 825px;
     height: 975px;
-    background-image: url(../img/KinomePoster.png);
+/*    background-image: url(../img/KinomePoster.png); */
     background-size: 100% 100%;
 }
 
@@ -53,6 +53,15 @@
     stroke: white;
     stroke-width: 1;
     stroke-opacity: .5;
+}
+
+.data#label {
+    font-family: sans-serif;
+    fill: black;
+}
+
+.node text {
+    cursor: move;
 }
 
 #red, #green, #blue {

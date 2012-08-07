@@ -15,16 +15,24 @@ $(document).ready(function() {
     $("#slope").slider({ min: 0, max: 10, step: 1, value: 5,
         slide: function(event, ui) {
             KVM.slope(ui.value);
+            KVM.setRadii();
+            KVM.force.resume()
         }
     });
     $("#yint").slider({ min: -100, max: 100, step: 1, value: 1,
         slide: function(event, ui) {
             KVM.yint(ui.value);
+            KVM.setRadii();
+            KVM.force.resume()
         }
     });
     $("#opac").slider({ min: 0.1, max: 1, step: .1, value: .8,
         slide: function(event, ui) {
             KVM.opac(ui.value);
+            d3.selectAll(".data#pts")
+                .style("fill-opacity", function(d) {
+                    return ui.value;
+                });
         }
     });
 
@@ -52,9 +60,11 @@ $(document).ready(function() {
         value: 57,
         slide: function(event, ui) {
             KVM.inhR(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.inhR(ui.value);
+            KVM.setColors();
         }
     });
     $(".inh#green").slider({
@@ -64,9 +74,11 @@ $(document).ready(function() {
         value: 39,
         slide: function(event, ui) {
             KVM.inhG(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.inhG(ui.value);
+            KVM.setColors();
         }
     });
     $(".inh#blue").slider({
@@ -76,9 +88,11 @@ $(document).ready(function() {
         value: 91,
         slide: function(event, ui) {
             KVM.inhB(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.inhB(ui.value);
+            KVM.setColors();
         }
     });
     //activators
@@ -89,9 +103,11 @@ $(document).ready(function() {
         value: 199,
         slide: function(event, ui) {
             KVM.actR(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.actR(ui.value);
+            KVM.setColors();
         }
     });
     $(".act#green").slider({
@@ -101,9 +117,11 @@ $(document).ready(function() {
         value: 153,
         slide: function(event, ui) {
             KVM.actG(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.actG(ui.value);
+            KVM.setColors();
         }
     });
     $(".act#blue").slider({
@@ -113,21 +131,24 @@ $(document).ready(function() {
         value: 0,
         slide: function(event, ui) {
             KVM.actB(ui.value);
+            KVM.setColors();
         },
         change: function(event, ui) {
             KVM.actB(ui.value);
+            KVM.setColors();
         }
     });
 
     // Demo button
+    // SigmaLBarMean Demo
     $("#demo").button();
     $("#demo").click(function() {
-        KVM.userData.destroyAll();
-        $.getJSON("demo.json", function(demoData) {
+        $.getJSON("data/SigmaLBarMean.json", function(demoData) {
+            KVM.clearData();
             KVM.applyData(demoData);
         });
     });
-
+ 
 
     /**
      * Kinome
@@ -135,6 +156,8 @@ $(document).ready(function() {
      */
     var KinomeViewModel = function() {
         var self = this;
+        self.width = ko.observable(825);
+        self.height = ko.observable(975);
 
         // radius scaling values
         self.slope = ko.observable(5);
@@ -151,6 +174,10 @@ $(document).ready(function() {
         self.actR = ko.observable(199);
         self.actG = ko.observable(153);
         self.actB = ko.observable(0);
+
+        // svg elements
+        self.svg = d3.select("#kinome");
+        self.dataGrp = d3.select(".data#grp");
 
 
         // Color picker
@@ -190,6 +217,7 @@ $(document).ready(function() {
                     temp.x /= 4;
                     temp.y /= 4;
                     temp.Intensity = 0;
+                    temp.fixed = true;
                     self.kinases.push(temp);
                 }
             }
@@ -243,13 +271,27 @@ $(document).ready(function() {
             return self.inhColor();
         };
 
-        // parse data
-        self.parseData = function (inputData) {
+        // change all radii accordingly
+        // use radius scaling events for data points
+        self.setRadii = function() {
+            d3.selectAll(".data#pts")
+                .attr("r", function(d) {
+                    return self.getRadius(d.Intensity);
+                });
+        };
 
+        // change all colors accordingly
+        // use color changing events for data points
+        self.setColors = function() {
+            d3.selectAll(".data#pts")
+                .style("fill", function(d) {
+                    return self.getColor(d.Intensity);
+                });
         };
 
         // purge all intensity data from kinases
         self.clearData = function () {
+            self.userData.removeAll();
             for (i = 0; i < self.kinases().length; i++) {
                 self.kinases()[i].Intensity = 0;
             }
@@ -269,7 +311,6 @@ $(document).ready(function() {
                 var r = abs(right[1]);
                 return l == r ? 0 : (l < r ? -1 : 1);
             });
-            console.log(inputData);
             while (inputData.length > 0) {
                 var temp = inputData.pop();
                 for (i = 0; i < self.kinases().length; i++) {
@@ -279,8 +320,130 @@ $(document).ready(function() {
                     }
                 }
             }
+            self.setForce();    // run force layout
         };
 
+        /**
+         * LABELS USING FORCES
+         * Plot collision detecting labels using d3 force layout
+         */
+
+        self.setForce = function() {
+            // establish data
+            self.label = {};
+            self.label.nodes = [];
+            self.label.links = [];
+            // shallow copies of userData
+            for (i = 0; i < self.userData().length; i++) {
+                self.label.nodes.push(self.userData()[i]);
+            }
+            // label info
+            for (i = 0; i < self.userData().length; i++) {
+                var temp = self.userData()[i];
+                self.label.nodes.push({
+                    "GeneID": temp.GeneID,
+                    "KinaseName": temp.KinaseName,
+                    "fixed": false,
+                    "x": temp.x,
+                    "y": temp.y
+                });
+            }
+            for (i = 0; i < self.userData().length; i++) {
+                self.label.links.push({
+                    "source": i,
+                    "target": i + self.userData().length,
+                    "weight": 1
+                });
+            }
+
+            // instantiate force
+            self.force = d3.layout.force()
+                .nodes(self.label.nodes)
+                .links(self.label.links)
+                .size([ self.width(), self.height() ])
+                .linkDistance(0)
+                .linkStrength(8)
+                .charge(-400)
+                .start();
+
+            // render nodes, links
+            self.forces = {};
+
+            self.forces.links = self.dataGrp.selectAll("line.link")
+                .data(self.force.links())
+                .enter()
+                .append("svg:line")
+                .attr("class", "link")
+                .style("stroke", "#000000")
+                .style("stroke-width", 0);
+
+            self.forces.nodes = self.dataGrp.selectAll("g.node")
+                .data(self.force.nodes())
+                .enter()
+                .append("svg:g")
+                .attr("class", "node");
+
+                            self.forces.nodes.append("svg:circle")
+                .attr("r", function(d, i) {
+                    return i <= self.userData().length ?
+                        self.getRadius(d.Intensity) : 0;
+                })
+                // only set class/id to valid circles (even)
+                .attr("class", function(d, i) {
+                    return i <= self.userData().length ? "data" : "dummy";
+                })
+                .attr("id", function(d, i) {
+                    return i <= self.userData().length ? "pts" : "dummy";
+                })
+                .style("fill", function(d) {
+                    return self.getColor(d.Intensity);
+                })
+                .style("fill-opacity", self.opac());
+
+            self.forces.nodes.append("svg:text")
+                .text(function(d, i) {
+                    return i <= self.userData().length ? "" : d.KinaseName;
+                })
+                // only set class/id to valid text labels (odd)
+                .attr("class", function(d, i) {
+                    return i <= self.userData().length ? "dummy" : "data";
+                }).attr("id", function(d, i) {
+                    return i <= self.userData().length ? "dummy" : "label";
+                });
+
+                // todo: fix this to work on groups only w/text
+                d3.selectAll("g.node")
+                .call(self.force.drag)
+                .on("mousedown", function(d) {
+                    console.log(d);
+                    d.fixed = true;
+                });
+
+
+            self.updateLink = function() {
+                this.attr("x1", function(d) {
+                    return d.source.x;
+                }).attr("y1", function(d) {
+                    return d.source.y;
+                }).attr("x2", function(d) {
+                    return d.target.x;
+                }).attr("y2", function(d) {
+                    return d.target.y;
+                });
+            };
+
+            self.updateNode = function() {
+                this.attr("transform", function(d) {
+                    return "translate(" + d.x + ", " + d.y + ")";
+                });
+            };
+
+            self.force.on("tick", function() {
+                self.forces.links.call(self.updateLink);
+                self.forces.nodes.call(self.updateNode);
+            });
+
+        };
     };
 
     KVM = new KinomeViewModel();
