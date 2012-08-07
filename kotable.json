@@ -38,7 +38,7 @@
     { "KinaseName": "PRKY", "GeneID": "5616", "HGNCSymbol": "PRKY", "x": "2571", "y": "2758" },
     { "KinaseName": "ROCK1", "GeneID": "6093", "HGNCSymbol": "ROCK1", "x": "2555", "y": "2962" },
     { "KinaseName": "ROCK2", "GeneID": "9475", "HGNCSymbol": "ROCK2", "x": "2550", "y": "2981" },
-    { "KinaseName": "RSK1", "GeneID": "6195", "HGNCSymbol": "RPS6KA1", "x": "2585", "y": "2505" },
+    { "KinaseName": "RSK1", "GeneID": "6195", "HGNCSymbol": "RPS6KA1", "x": "2855", "y": "2505" },
     { "KinaseName": "RSK3", "GeneID": "6196", "HGNCSymbol": "RPS6KA2", "x": "2711", "y": "2555" },
     { "KinaseName": "RSK2", "GeneID": "6197", "HGNCSymbol": "RPS6KA3", "x": "2859", "y": "2533" },
     { "KinaseName": "MSK2", "GeneID": "8986", "HGNCSymbol": "RPS6KA4", "x": "2511", "y": "2541" },
@@ -67,7 +67,7 @@
     { "KinaseName": "CaMK1d", "GeneID": "57118", "HGNCSymbol": "CAMK1D", "x": "2296", "y": "3683" },
     { "KinaseName": "CaMK1g", "GeneID": "57172", "HGNCSymbol": "CAMK1G", "x": "2317", "y": "3596" },
     { "KinaseName": "CaMK2a", "GeneID": "815", "HGNCSymbol": "CAMK2A", "x": "2030", "y": "3309" },
-    { "KinaseName": "CaMK2b", "GeneID": "816", "HGNCSymbol": "CAMK2B", "x": "2086", "y": "3314" },
+    { "KinaseName": "CaMK2b ", "GeneID": "816", "HGNCSymbol": "CAMK2B", "x": "2086", "y": "3314" },
     { "KinaseName": "CaMK2d", "GeneID": "817", "HGNCSymbol": "CAMK2D", "x": "2050", "y": "3321" },
     { "KinaseName": "CaMK2g", "GeneID": "818", "HGNCSymbol": "CAMK2G", "x": "2118", "y": "3305" },
     { "KinaseName": "CaMK4", "GeneID": "814", "HGNCSymbol": "CAMK4", "x": "2244", "y": "3386" },
@@ -398,7 +398,7 @@
     { "KinaseName": "LTK", "GeneID": "4058", "HGNCSymbol": "LTK", "x": "1006", "y": "645" },
     { "KinaseName": "LYN", "GeneID": "4067", "HGNCSymbol": "LYN", "x": "492", "y": "660" },
     { "KinaseName": "CTK", "GeneID": "4145", "HGNCSymbol": "MATK", "x": "610", "y": "1072" },
-    { "KinaseName": "MER", "GeneID": "10461", "HGNCSymbol": "MERTK", "x": "1195", "y": "495" },
+    { "KinaseName": "MER", "GeneID": "10461", "HGNCSymbol": "MERTK", "x": "1195", "y": "460" },
     { "KinaseName": "MET", "GeneID": "4233", "HGNCSymbol": "MET", "x": "1209", "y": "575" },
     { "KinaseName": "RON", "GeneID": "4486", "HGNCSymbol": "MST1R", "x": "1193", "y": "587" },
     { "KinaseName": "MUSK", "GeneID": "4593", "HGNCSymbol": "MUSK", "x": "1006", "y": "417" },
@@ -430,7 +430,7 @@
     { "KinaseName": "TYRO3", "GeneID": "7301", "HGNCSymbol": "TYRO3", "x": "1247", "y": "482" },
     { "KinaseName": "YES", "GeneID": "7525", "HGNCSymbol": "YES1", "x": "566", "y": "569" },
     { "KinaseName": "ZAP70", "GeneID": "7535", "HGNCSymbol": "ZAP70", "x": "1216", "y": "873" },
-    { "KinaseName": "HER2/ErbB2", "GeneID": "2064", "HGNCSymbol": "ERBB2", "x": "1552", "y": "564" },
+    { "KinaseName": "HER2/ErbB2", "GeneID": "2064", "HGNCSymbol": "ERBB2", "x": "1521", "y": "559" },
     { "KinaseName": "HER3/ErbB3", "GeneID": "2065", "HGNCSymbol": "ERBB3", "x": "1504", "y": "789" },
     { "KinaseName": "HER4/ErbB4", "GeneID": "2066", "HGNCSymbol": "ERBB4", "x": "1571", "y": "677" },
     { "KinaseName": "ACTR2", "GeneID": "10097", "HGNCSymbol": "ACTR2", "x": "2248", "y": "1124" },
@@ -476,5 +476,4 @@
     { "KinaseName": "ACTR2B", "GeneID": "93", "HGNCSymbol": "ACVR2B", "x": "2258", "y": "1146" },
     { "KinaseName": "HH498", "GeneID": "51086", "HGNCSymbol": "TNNI3K", "x": "2103", "y": "1093" },
     { "KinaseName": "SgK288", "GeneID": "255239", "HGNCSymbol": "ANKK1", "x": "1900", "y": "860" }
-
 ]
