@@ -363,7 +363,7 @@ $(document).ready(function() {
                 .size([ self.width(), self.height() ])
                 .linkDistance(0)
                 .linkStrength(8)
-                .charge(-600)
+                .charge(-400)
                 .start();
 
             // render nodes, links
@@ -382,7 +382,8 @@ $(document).ready(function() {
                 .enter()
                 .append("svg:g")
                 .attr("class", "node");
-            self.forces.nodes.append("svg:circle")
+
+                            self.forces.nodes.append("svg:circle")
                 .attr("r", function(d, i) {
                     return i <= self.userData().length ?
                         self.getRadius(d.Intensity) : 0;
@@ -408,6 +409,14 @@ $(document).ready(function() {
                     return i <= self.userData().length ? "dummy" : "data";
                 }).attr("id", function(d, i) {
                     return i <= self.userData().length ? "dummy" : "label";
+                });
+
+                // todo: fix this to work on groups only w/text
+                d3.selectAll("g.node")
+                .call(self.force.drag)
+                .on("mousedown", function(d) {
+                    console.log(d);
+                    d.fixed = true;
                 });
 
 
