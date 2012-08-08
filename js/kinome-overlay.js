@@ -278,6 +278,12 @@ $(document).ready(function() {
                 .attr("r", function(d) {
                     return self.getRadius(d.Intensity);
                 });
+            // make labels disappear when datapt radius is zero
+            d3.selectAll(".data#label")
+                .attr("visibility", function(d) {
+                    return self.getRadius(d.Intensity) > 0 ? "visible"
+                        : "hidden";
+                });
         };
 
         // change all colors accordingly
@@ -343,6 +349,7 @@ $(document).ready(function() {
                 self.label.nodes.push({
                     "GeneID": temp.GeneID,
                     "KinaseName": temp.KinaseName,
+                    "Intensity": temp.Intensity,
                     "fixed": false,
                     "x": temp.x,
                     "y": temp.y
@@ -382,7 +389,13 @@ $(document).ready(function() {
                 .enter()
                 .append("svg:g")
                 .attr("class", function (d, i) {
-                    return i <= self.userData().length - 1 ? "node" : "label";
+                    return i <= self.userData().length - 1 ? "node"
+                        : "label";
+                })
+                // make labels disappear when datapt radius is zero
+                .attr("visibility", function (d) {
+                    return self.getRadius(d.Intensity) > 0 ? "visible"
+                        : "hidden";
                 });
 
             self.forces.nodes.append("svg:circle")
