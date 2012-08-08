@@ -278,6 +278,12 @@ $(document).ready(function() {
                 .attr("r", function(d) {
                     return self.getRadius(d.Intensity);
                 });
+            // make labels disappear when datapt radius is zero
+            d3.selectAll(".data#label")
+                .attr("visibility", function(d) {
+                    return self.getRadius(d.Intensity) > 0 ? "visible"
+                        : "hidden";
+                });
         };
 
         // change all colors accordingly
@@ -343,6 +349,7 @@ $(document).ready(function() {
                 self.label.nodes.push({
                     "GeneID": temp.GeneID,
                     "KinaseName": temp.KinaseName,
+                    "Intensity": temp.Intensity,
                     "fixed": false,
                     "x": temp.x,
                     "y": temp.y
@@ -382,20 +389,26 @@ $(document).ready(function() {
                 .enter()
                 .append("svg:g")
                 .attr("class", function (d, i) {
-                    return i <= self.userData().length - 1 ? "node" : "label";
+                    return i <= self.userData().length - 1 ? "node"
+                        : "label";
+                })
+                // make labels disappear when datapt radius is zero
+                .attr("visibility", function (d) {
+                    return self.getRadius(d.Intensity) > 0 ? "visible"
+                        : "hidden";
                 });
 
             self.forces.nodes.append("svg:circle")
                 .attr("r", function(d, i) {
-                    return i <= self.userData().length - 1 ?
+                    return i < self.userData().length ?
                         self.getRadius(d.Intensity) : 0;
                 })
                 // only set class/id to valid circles (even)
                 .attr("class", function(d, i) {
-                    return i <= self.userData().length - 1 ? "data" : "dummy";
+                    return i < self.userData().length ? "data" : "dummy";
                 })
                 .attr("id", function(d, i) {
-                    return i <= self.userData().length - 1 ? "pts" : "dummy";
+                    return i < self.userData().length ? "pts" : "dummy";
                 })
                 .style("fill", function(d) {
                     return self.getColor(d.Intensity);
@@ -404,20 +417,19 @@ $(document).ready(function() {
 
             self.forces.nodes.append("svg:text")
                 .text(function(d, i) {
-                    return i <= self.userData().length - 1 ? "" : d.KinaseName;
+                    return i < self.userData().length ? "" : d.KinaseName;
                 })
                 // only set class/id to valid text labels (odd)
                 .attr("class", function(d, i) {
-                    return i <= self.userData().length - 1 ? "dummy" : "data";
+                    return i < self.userData().length ? "dummy" : "data";
                 }).attr("id", function(d, i) {
-                    return i <= self.userData().length - 1 ? "dummy" : "label";
+                    return i < self.userData().length ? "dummy" : "label";
                 });
 
                 // todo: fix this to work on groups only w/text
                 d3.selectAll("g.label")
                 .call(self.force.drag)
                 .on("mousedown", function(d) {
-                    console.log(d);
                     d.fixed = true;
                 });
 
