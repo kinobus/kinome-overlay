@@ -11,7 +11,7 @@ pF = parseFloat;
 abs = Math.abs;
 pow = Math.pow;
 
-$(document).ready(function() {
+(function ($) {
     $("#slope").slider({ min: 0, max: 10, step: 1, value: 5,
         slide: function(event, ui) {
             KVM.slope(ui.value);
@@ -464,4 +464,4 @@ $(document).ready(function() {
 
     ko.applyBindings(KVM);
 
-});
+}) (jQuery);
