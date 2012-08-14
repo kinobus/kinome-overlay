@@ -16,14 +16,14 @@ pow = Math.pow;
         slide: function(event, ui) {
             KVM.slope(ui.value);
             KVM.setRadii();
-            KVM.force.resume()
+            KVM.force.resume();
         }
     });
     $("#yint").slider({ min: -100, max: 100, step: 1, value: 1,
         slide: function(event, ui) {
             KVM.yint(ui.value);
             KVM.setRadii();
-            KVM.force.resume()
+            KVM.force.resume();
         }
     });
     $("#opac").slider({ min: 0.1, max: 1, step: .1, value: .8,
@@ -370,7 +370,7 @@ pow = Math.pow;
                 .size([ self.width(), self.height() ])
                 .linkDistance(0)
                 .linkStrength(8)
-                .charge(-400)
+                .charge(-200)
                 .start();
 
             // render nodes, links
