@@ -206,7 +206,7 @@ pow = Math.pow;
         });
 
         // Synchronously get kinase coordinates
-        self.kinases = ko.observableArray([]);
+        self.kinases = [];
         $.ajax({
             async: false,
             dataType: "json",
@@ -222,6 +222,17 @@ pow = Math.pow;
                 }
             }
         });
+
+        // plot static kinases endpoints
+        self.kinaseGrp = d3.select("#kinase_grp").selectAll("circle")
+            .data(self.kinases)
+            .enter()
+            .append("svg:circle")
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; })
+            .attr("r", function(d) { return 4; })
+            .attr("class", "kinase")
+            .attr("id", function(d) { return d.GeneID; });
 
         /* Upload file handle */
         self.userData = ko.observableArray();
@@ -249,9 +260,9 @@ pow = Math.pow;
 
         // Return Kinase object by GeneID
         self.getKinaseById = function (geneid) {
-            for (i = 0; i < self.kinases().length; i++) {
-                if (self.kinases()[i].GeneID = geneid) {
-                    return self.kinase()[i];
+            for (i = 0; i < self.kinases.length; i++) {
+                if (self.kinases[i].GeneID = geneid) {
+                    return self.kinases[i];
                 }
             }
             return undefined;
@@ -298,8 +309,8 @@ pow = Math.pow;
         // purge all intensity data from kinases
         self.clearData = function () {
             self.userData.removeAll();
-            for (i = 0; i < self.kinases().length; i++) {
-                self.kinases()[i].Intensity = 0;
+            for (i = 0; i < self.kinases.length; i++) {
+                self.kinases[i].Intensity = 0;
             }
             self.userData.destroyAll();
         };
@@ -319,10 +330,10 @@ pow = Math.pow;
             });
             while (inputData.length > 0) {
                 var temp = inputData.pop();
-                for (i = 0; i < self.kinases().length; i++) {
+                for (i = 0; i < self.kinases.length; i++) {
                     if (self.kinases()[i].GeneID == temp[0]) {
                         self.kinases()[i].Intensity = temp[1];
-                        self.userData.push(self.kinases()[i]);
+                        self.userData.push(self.kinases[i]);
                     }
                 }
             }
