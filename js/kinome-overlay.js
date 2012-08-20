@@ -228,12 +228,12 @@ pow = Math.pow;
         self.reader = new FileReader();
 
         // Event binding on View: input file-upload
-        self.onFileUpload = function() {
+        self.onFileUpload = $("#csv_file").change(function() {
             var upload_file = document.getElementById("csv_file").files;
             for (i = 0; i < upload_file.length; i++) {
                 self.reader.readAsText(upload_file[i]);
             }
-        };
+        });
 
         // Event triggered by finished file upload
         // called upon completion of reader.readAsText
