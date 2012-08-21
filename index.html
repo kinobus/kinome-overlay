@@ -20,11 +20,28 @@
     </head>
 
 <body>
-    <!-- Title -->
-    <div id="title" class="pos">
-        <h1 id="title">Kinome Overlay</h1>
-    </div>
 
+    <!-- Navbar (tbs) -->
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="#">Kinome Overlay</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li><a href="http://code.google.com/p/kinome-overlay">About</a></li>
+                    <li><a href="mailto:josephl@cs.pdx.edu,nrobin24@uw.edu">Contact</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+</div>
+
+<div class="container" id="control">
     <div id="control" class="pos"><!-- Control Panel Div -->
         <div id="tabs" style="width: 100%"><!-- tabbed ctrls -->
             <ul>
@@ -120,6 +137,7 @@
 
         </div><!-- end tabs div -->
     </div><!-- end control pos -->
+</div><!-- end container -->
 
     <div id="kinomeDiv" class="pos">
         <svg id="kinome">

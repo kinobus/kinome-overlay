@@ -1,11 +1,5 @@
-#title {
-    text-align: center;
-    font-size: 80;
-    font-family: sans-serif;
-    font-weight: 700;
-    margin-top: 4px;
-    margin-bottom: 6px;
-    white-space: nowrap;
+body {
+    padding-top: 60px;
 }
 
 .pos {
