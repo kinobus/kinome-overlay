@@ -156,8 +156,8 @@ pow = Math.pow;
      */
     var KinomeViewModel = function() {
         var self = this;
-        self.width = ko.observable(825);
-        self.height = ko.observable(975);
+        self.width = 825;
+        self.height = 975;
 
         // radius scaling values
         self.slope = ko.observable(5);
@@ -378,7 +378,7 @@ pow = Math.pow;
             self.force = d3.layout.force()
                 .nodes(self.label.nodes)
                 .links(self.label.links)
-                .size([ self.width(), self.height() ])
+                .size([ self.width, self.height ])
                 .linkDistance(0)
                 .linkStrength(8)
                 .charge(-200)
