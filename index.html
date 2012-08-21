@@ -9,7 +9,6 @@
     <!-- Necessary JS Libraries -->
     <script src="js/jquery-1.7.2.js"></script>
     <script src="js/jquery-ui-1.8.22.custom.min.js"></script>
-    <script src="js/knockout-2.1.0.js"></script>
     <script src="js/d3.v2.js"></script>
 
     </head>
@@ -30,7 +29,7 @@
             </ul>
             <!-- Upload Tab -->
             <div id="upload" class="tab">
-                <input id="csv_file" type="file" accept="text/csv" multiple data-bind="event: { change: onFileUpload }"></input>
+                <input id="csv_file" type="file" accept="text/csv" multiple"></input>
             </div><!-- end upload -->
 
             <!-- Scaling -->
@@ -38,13 +37,13 @@
                 <table id="scale" class="ctrlTable">
                     <tr>
                         <td><strong>Slope</strong></td>
-                        <td width="200px"><div class="slider" id="slope" data-bind="value: slope"></div></td>
-                        <td><label id="slope_text" data-bind="text: slope"></label></td>
+                        <td width="200px"><div class="slider" id="slope"></div></td>
+                        <td><label id="slope"></label></td>
                     </tr>
                     <tr>
                         <td><strong>Y-intercept</strong></td>
-                        <td><div class="slider" id="yint" data-bind="value: yint"></div></td>
-                        <td><label id="yint_text" data-bind="text: yint"></label></td>
+                        <td><div class="slider" id="yint"></div></td>
+                        <td><label id="yint"></label></td>
                     </tr>
                 </table>
             </div><!-- end scaling -->
@@ -61,28 +60,28 @@
                         <td>
                             <table>
                                 <tr>
-                                    <td><div id="red" class="inh" data-bind="value: inhR"></div></td>
-                                    <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="inh" data-bind="style: { backgroundColor: inhColor }"></div></td>
+                                    <td><div id="red" class="inh"></div></td>
+                                    <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="inh" style="background-color: #39275b"></div></td>
                                 </tr>
                                 <tr>
-                                    <td><div id="green" class="inh" data-bind="value: inhG"></div></td>
+                                    <td><div id="green" class="inh"></div></td>
                                 </tr>
                                 <tr>
-                                    <td><div id="blue" class="inh" data-bind="value: inhB"></div></td>
+                                    <td><div id="blue" class="inh"></div></td>
                                 </tr>
                             </table>
                         </td>
                         <td>
                             <table>
                                 <tr>
-                                    <td><div id="red" class="act" data-bind="value: actR"></div></td>
-                                    <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="act" data-bind="style: { backgroundColor: actColor }"></div></td>
+                                    <td><div id="red" class="act"></div></td>
+                                    <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="act" style="background-color: #c79900"></div></td>
                                 </tr>
                                 <tr>
-                                    <td><div id="green" class="act" data-bind="value: actG"></div></td>
+                                    <td><div id="green" class="act"></div></td>
                                 </tr>
                                 <tr>
-                                    <td><div id="blue" class="act" data-bind="value: actB"></div></td>
+                                    <td><div id="blue" class="act"></div></td>
                                 </tr>
                             </table>
                         </td>
@@ -93,7 +92,7 @@
                                         <div id="opac"></div>
                                     </td>
                                     <td width="40px">
-                                        <label id="opac_text" data-bind="text: opac"></label>
+                                        <label id="opac"></label>
                                     </td>
                                 </tr>
                             </table>
@@ -119,9 +118,7 @@
     <div id="kinomeDiv" class="pos">
         <svg id="kinome">
             <image xlink:href="img/kinome.svg" width="825px" height="975px" style="opacity: .3"></image>
-            <g id="kinase_grp" data-bind="foreach: kinases">
-            <circle class="kinase" data-bind="attr: { cx: x, cy: y, r: 4, id: GeneID }" />
-            </g>
+            <g id="kinase_grp"></g>
             <g class="data" id="grp"></g>
         </svg>
     </div>

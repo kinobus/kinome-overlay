@@ -14,21 +14,28 @@ pow = Math.pow;
 (function ($) {
     $("#slope").slider({ min: 0, max: 10, step: 1, value: 5,
         slide: function(event, ui) {
-            KVM.slope(ui.value);
+            KVM.slope = ui.value;
+            KVM.slopeLabel.text(ui.value);
             KVM.setRadii();
-            KVM.force.resume()
+            if (KVM.force) {
+                KVM.force.resume();
+            }
         }
     });
-    $("#yint").slider({ min: -100, max: 100, step: 1, value: 1,
+    $("#yint").slider({ min: -100, max: 100, step: 1, value: 0,
         slide: function(event, ui) {
-            KVM.yint(ui.value);
+            KVM.yint = ui.value;
+            KVM.yintLabel.text(ui.value);
             KVM.setRadii();
-            KVM.force.resume()
+            if (KVM.force) {
+                KVM.force.resume();
+            }
         }
     });
     $("#opac").slider({ min: 0.1, max: 1, step: .1, value: .8,
         slide: function(event, ui) {
-            KVM.opac(ui.value);
+            KVM.opac = ui.value;
+            KVM.opacLabel.text(ui.value);
             d3.selectAll(".data#pts")
                 .style("fill-opacity", function(d) {
                     return ui.value;
@@ -59,11 +66,11 @@ pow = Math.pow;
         max: 255,
         value: 57,
         slide: function(event, ui) {
-            KVM.inhR(ui.value);
+            KVM.inhR = ui.value;
             KVM.setColors();
         },
         change: function(event, ui) {
-            KVM.inhR(ui.value);
+            KVM.inhR = ui.value;
             KVM.setColors();
         }
     });
@@ -73,11 +80,11 @@ pow = Math.pow;
         max: 255,
         value: 39,
         slide: function(event, ui) {
-            KVM.inhG(ui.value);
+            KVM.inhG = ui.value;
             KVM.setColors();
         },
         change: function(event, ui) {
-            KVM.inhG(ui.value);
+            KVM.inhG = ui.value;
             KVM.setColors();
         }
     });
@@ -87,11 +94,11 @@ pow = Math.pow;
         max: 255,
         value: 91,
         slide: function(event, ui) {
-            KVM.inhB(ui.value);
+            KVM.inhB = ui.value;
             KVM.setColors();
         },
         change: function(event, ui) {
-            KVM.inhB(ui.value);
+            KVM.inhB = ui.value;
             KVM.setColors();
         }
     });
@@ -102,11 +109,11 @@ pow = Math.pow;
         max: 255,
         value: 199,
         slide: function(event, ui) {
-            KVM.actR(ui.value);
+            KVM.actR = ui.value;
             KVM.setColors();
         },
         change: function(event, ui) {
-            KVM.actR(ui.value);
+            KVM.actR = ui.value;
             KVM.setColors();
         }
     });
@@ -116,11 +123,11 @@ pow = Math.pow;
         max: 255,
         value: 153,
         slide: function(event, ui) {
-            KVM.actG(ui.value);
+            KVM.actG = ui.value;
             KVM.setColors();
         },
         change: function(event, ui) {
-            KVM.actG(ui.value);
+            KVM.actG = ui.value;
             KVM.setColors();
         }
     });
@@ -130,11 +137,11 @@ pow = Math.pow;
         max: 255,
         value: 0,
         slide: function(event, ui) {
-            KVM.actB(ui.value);
+            KVM.actB = ui.value;
             KVM.setColors();
         },
         change: function(event, ui) {
-            KVM.actB(ui.value);
+            KVM.actB = ui.value;
             KVM.setColors();
         }
     });
@@ -156,24 +163,31 @@ pow = Math.pow;
      */
     var KinomeViewModel = function() {
         var self = this;
-        self.width = ko.observable(825);
-        self.height = ko.observable(975);
+        self.width = 825;
+        self.height = 975;
 
         // radius scaling values
-        self.slope = ko.observable(5);
-        self.yint = ko.observable(0);
+        self.slope = 5;
+        self.yint = 0;
+
+        // set labels for scaling factors
+        self.slopeLabel = $("label#slope").text(self.slope);
+        self.yintLabel = $("label#yint").text(self.yint);
 
         // opacity
-        self.opac = ko.observable(.8);
+        self.opac = 0.8;
 
-        // Observable color values
-        self.inhR = ko.observable(57);
-        self.inhG = ko.observable(39);
-        self.inhB = ko.observable(91);
+        // set opacity label
+        self.opacLabel = $("label#opac").text(self.opac);
 
-        self.actR = ko.observable(199);
-        self.actG = ko.observable(153);
-        self.actB = ko.observable(0);
+        // color values
+        self.inhR = 57;
+        self.inhG = 39;
+        self.inhB = 91;
+
+        self.actR = 199;
+        self.actG = 153;
+        self.actB = 0;
 
         // svg elements
         self.svg = d3.select("#kinome");
@@ -194,19 +208,19 @@ pow = Math.pow;
             });
             return hex.join( "" ).toUpperCase();
         };
-        self.inhColor = ko.computed(function() {
-            return "#" + self.hexFromRGB(self.inhR(),
-                self.inhG(),
-                self.inhB());
-        });
-        self.actColor = ko.computed(function() {
-            return "#" + self.hexFromRGB(self.actR(),
-                self.actG(),
-                self.actB());
-        });
+        self.inhColor = function() {
+            return "#" + self.hexFromRGB(self.inhR,
+                self.inhG,
+                self.inhB);
+        };
+        self.actColor = function() {
+            return "#" + self.hexFromRGB(self.actR,
+                self.actG,
+                self.actB);
+        };
 
         // Synchronously get kinase coordinates
-        self.kinases = ko.observableArray([]);
+        self.kinases = [];
         $.ajax({
             async: false,
             dataType: "json",
@@ -223,17 +237,28 @@ pow = Math.pow;
             }
         });
 
+        // plot static kinases endpoints
+        self.kinaseGrp = d3.select("#kinase_grp").selectAll("circle")
+            .data(self.kinases)
+            .enter()
+            .append("svg:circle")
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; })
+            .attr("r", function(d) { return 4; })
+            .attr("class", "kinase")
+            .attr("id", function(d) { return d.GeneID; });
+
         /* Upload file handle */
-        self.userData = ko.observableArray();
+        self.userData = [];
         self.reader = new FileReader();
 
         // Event binding on View: input file-upload
-        self.onFileUpload = function() {
+        self.onFileUpload = $("#csv_file").change(function() {
             var upload_file = document.getElementById("csv_file").files;
             for (i = 0; i < upload_file.length; i++) {
                 self.reader.readAsText(upload_file[i]);
             }
-        };
+        });
 
         // Event triggered by finished file upload
         // called upon completion of reader.readAsText
@@ -249,9 +274,9 @@ pow = Math.pow;
 
         // Return Kinase object by GeneID
         self.getKinaseById = function (geneid) {
-            for (i = 0; i < self.kinases().length; i++) {
-                if (self.kinases()[i].GeneID = geneid) {
-                    return self.kinase()[i];
+            for (i = 0; i < self.kinases.length; i++) {
+                if (self.kinases[i].GeneID = geneid) {
+                    return self.kinases[i];
                 }
             }
             return undefined;
@@ -259,7 +284,7 @@ pow = Math.pow;
 
         // Return radius based on intensity
         self.getRadius = function (intensity) {
-            var radius = self.slope() * intensity * (pow(-1, (intensity < 0))) + self.yint();
+            var radius = self.slope * intensity * (pow(-1, (intensity < 0))) + self.yint;
             return radius >= 0 ? radius : 0;
         };
 
@@ -289,19 +314,26 @@ pow = Math.pow;
         // change all colors accordingly
         // use color changing events for data points
         self.setColors = function() {
+
+            // set all data node colors
             d3.selectAll(".data#pts")
                 .style("fill", function(d) {
                     return self.getColor(d.Intensity);
                 });
+
+            // set color samples
+            $("#inh").css("background-color", self.inhColor());
+            $("#act").css("background-color", self.actColor());
+
         };
 
         // purge all intensity data from kinases
         self.clearData = function () {
-            self.userData.removeAll();
-            for (i = 0; i < self.kinases().length; i++) {
-                self.kinases()[i].Intensity = 0;
+            self.userData = [];
+            for (i = 0; i < self.kinases.length; i++) {
+                self.kinases[i].Intensity = 0;
             }
-            self.userData.destroyAll();
+            self.userData = [];
         };
 
 
@@ -319,10 +351,10 @@ pow = Math.pow;
             });
             while (inputData.length > 0) {
                 var temp = inputData.pop();
-                for (i = 0; i < self.kinases().length; i++) {
-                    if (self.kinases()[i].GeneID == temp[0]) {
-                        self.kinases()[i].Intensity = temp[1];
-                        self.userData.push(self.kinases()[i]);
+                for (i = 0; i < self.kinases.length; i++) {
+                    if (self.kinases[i].GeneID == temp[0]) {
+                        self.kinases[i].Intensity = temp[1];
+                        self.userData.push(self.kinases[i]);
                     }
                 }
             }
@@ -340,12 +372,12 @@ pow = Math.pow;
             self.label.nodes = [];
             self.label.links = [];
             // shallow copies of userData
-            for (i = 0; i < self.userData().length; i++) {
-                self.label.nodes.push(self.userData()[i]);
+            for (i = 0; i < self.userData.length; i++) {
+                self.label.nodes.push(self.userData[i]);
             }
             // label info
-            for (i = 0; i < self.userData().length; i++) {
-                var temp = self.userData()[i];
+            for (i = 0; i < self.userData.length; i++) {
+                var temp = self.userData[i];
                 self.label.nodes.push({
                     "GeneID": temp.GeneID,
                     "KinaseName": temp.KinaseName,
@@ -355,10 +387,10 @@ pow = Math.pow;
                     "y": temp.y
                 });
             }
-            for (i = 0; i < self.userData().length; i++) {
+            for (i = 0; i < self.userData.length; i++) {
                 self.label.links.push({
                     "source": i,
-                    "target": i + self.userData().length,
+                    "target": i + self.userData.length,
                     "weight": 1
                 });
             }
@@ -367,10 +399,10 @@ pow = Math.pow;
             self.force = d3.layout.force()
                 .nodes(self.label.nodes)
                 .links(self.label.links)
-                .size([ self.width(), self.height() ])
+                .size([ self.width, self.height ])
                 .linkDistance(0)
                 .linkStrength(8)
-                .charge(-400)
+                .charge(-200)
                 .start();
 
             // render nodes, links
@@ -389,7 +421,7 @@ pow = Math.pow;
                 .enter()
                 .append("svg:g")
                 .attr("class", function (d, i) {
-                    return i <= self.userData().length - 1 ? "node"
+                    return i <= self.userData.length - 1 ? "node"
                         : "label";
                 })
                 // make labels disappear when datapt radius is zero
@@ -400,30 +432,30 @@ pow = Math.pow;
 
             self.forces.nodes.append("svg:circle")
                 .attr("r", function(d, i) {
-                    return i < self.userData().length ?
+                    return i < self.userData.length ?
                         self.getRadius(d.Intensity) : 0;
                 })
                 // only set class/id to valid circles (even)
                 .attr("class", function(d, i) {
-                    return i < self.userData().length ? "data" : "dummy";
+                    return i < self.userData.length ? "data" : "dummy";
                 })
                 .attr("id", function(d, i) {
-                    return i < self.userData().length ? "pts" : "dummy";
+                    return i < self.userData.length ? "pts" : "dummy";
                 })
                 .style("fill", function(d) {
                     return self.getColor(d.Intensity);
                 })
-                .style("fill-opacity", self.opac());
+                .style("fill-opacity", self.opac);
 
             self.forces.nodes.append("svg:text")
                 .text(function(d, i) {
-                    return i < self.userData().length ? "" : d.KinaseName;
+                    return i < self.userData.length ? "" : d.KinaseName;
                 })
                 // only set class/id to valid text labels (odd)
                 .attr("class", function(d, i) {
-                    return i < self.userData().length ? "dummy" : "data";
+                    return i < self.userData.length ? "dummy" : "data";
                 }).attr("id", function(d, i) {
-                    return i < self.userData().length ? "dummy" : "label";
+                    return i < self.userData.length ? "dummy" : "label";
                 });
 
                 // todo: fix this to work on groups only w/text
@@ -461,7 +493,5 @@ pow = Math.pow;
     };
 
     KVM = new KinomeViewModel();
-
-    ko.applyBindings(KVM);
 
 }) (jQuery);
