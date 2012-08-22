@@ -30,6 +30,10 @@ body {
     font-size: 4;
 }
 
+#kinomeDiv {
+    width: 825px;
+}
+
 #kinome {
     width: 825px;
     height: 975px;
