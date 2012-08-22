@@ -8,7 +8,7 @@
     <!-- linked styles -->
     <link href="css/custom-theme/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" />
     <link href="css/kinome.css" rel="stylesheet" type="text/css" />
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
     <link rel="icon" type="image/ico" href="kinome-overlay.ico" />
 
     <!-- Necessary JS Libraries -->
@@ -47,94 +47,96 @@
 
         <!-- Sidebar -->
         <div class="span3 bs-docs-sidebar">
-            <div id="tabs" style="width: 100%"><!-- tabbed ctrls -->
-                <ul>
-                    <li><a href="#upload">Upload Data</a></li>
-                    <li><a href="#scaling">Scaling</a></li>
-                    <li><a href="#colors">Color</a></li>
-                    <li><a href="#demo">Demo</a></li>
+            <div class="well sidebar-nav">
+                <ul class="nav nav-list">
+
+                    <!-- Upload Tab -->
+                    <li class="nav-header">Upload Data</li>
+                        <div id="upload">
+                            <input id="csv_file" type="file" accept="text/csv" multiple></input>
+                        </div><!-- end upload -->
+
+                    <!-- Scaling -->
+                    <li class="nav-header">Scaling</li>
+                        <div id="scaling">
+                            <table id="scale" class="ctrlTable">
+                                <tr>
+                                    <td>Slope</td>
+                                    <td width="200px"><div class="slider" id="slope"></div></td>
+                                    <td><label id="slope"></label></td>
+                                </tr>
+                                <tr>
+                                    <td>Y-intercept</td>
+                                    <td><div class="slider" id="yint"></div></td>
+                                    <td><label id="yint"></label></td>
+                                </tr>
+                            </table>
+                        </div><!-- end scaling -->
+
+                    <!-- Color Picker -->
+                    <li class="nav-header">Color</li>
+                        <div id="colors">
+                            <table class="ctrlTable" id="colorTable">
+                                <tr>
+                                    <th>Inhibitor</th>
+                                    <th>Activator</th>
+                                    <th>Opacity</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <td><div id="red" class="inh"></div></td>
+                                                <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="inh" style="background-color: #39275b"></div></td>
+                                            </tr>
+                                            <tr>
+                                                <td><div id="green" class="inh"></div></td>
+                                            </tr>
+                                            <tr>
+                                                <td><div id="blue" class="inh"></div></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <td><div id="red" class="act"></div></td>
+                                                <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="act" style="background-color: #c79900"></div></td>
+                                            </tr>
+                                            <tr>
+                                                <td><div id="green" class="act"></div></td>
+                                            </tr>
+                                            <tr>
+                                                <td><div id="blue" class="act"></div></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td><!-- opacity -->
+                                        <table>
+                                            <tr>
+                                                <td width="100px">
+                                                    <div id="opac"></div>
+                                                </td>
+                                                <td width="40px">
+                                                    <label id="opac"></label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td><!-- end opacity -->
+                                </tr>
+                            </table><!-- end color -->
+
+                        </div><!-- end colors tab -->
+
+                    <!-- Demo -->
+                    <li class="nav-header">Demo</li>
+                        <div id="demo">
+                            <button id="demo">SigmaLBarMean</button>
+                        </div>
+
                 </ul>
-                <!-- Upload Tab -->
-                <div id="upload" class="tab">
-                    <input id="csv_file" type="file" accept="text/csv" multiple></input>
-                </div><!-- end upload -->
 
-                <!-- Scaling -->
-                <div id="scaling" class="tab">
-                    <table id="scale" class="ctrlTable">
-                        <tr>
-                            <td><strong>Slope</strong></td>
-                            <td width="200px"><div class="slider" id="slope"></div></td>
-                            <td><label id="slope"></label></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Y-intercept</strong></td>
-                            <td><div class="slider" id="yint"></div></td>
-                            <td><label id="yint"></label></td>
-                        </tr>
-                    </table>
-                </div><!-- end scaling -->
-
-                <!-- Color Picker -->
-                <div id="colors" class="tab">
-                    <table class="ctrlTable" id="colorTable">
-                        <tr>
-                            <th>Inhibitor</th>
-                            <th>Activator</th>
-                            <th>Opacity</th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td><div id="red" class="inh"></div></td>
-                                        <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="inh" style="background-color: #39275b"></div></td>
-                                    </tr>
-                                    <tr>
-                                        <td><div id="green" class="inh"></div></td>
-                                    </tr>
-                                    <tr>
-                                        <td><div id="blue" class="inh"></div></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td><div id="red" class="act"></div></td>
-                                        <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="act" style="background-color: #c79900"></div></td>
-                                    </tr>
-                                    <tr>
-                                        <td><div id="green" class="act"></div></td>
-                                    </tr>
-                                    <tr>
-                                        <td><div id="blue" class="act"></div></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td><!-- opacity -->
-                                <table>
-                                    <tr>
-                                        <td width="100px">
-                                            <div id="opac"></div>
-                                        </td>
-                                        <td width="40px">
-                                            <label id="opac"></label>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td><!-- end opacity -->
-                        </tr>
-                    </table><!-- end color -->
-
-                </div><!-- end colors tab -->
-
-                <!-- Demo -->
-                <div id="demo" class="tab">
-                    <button id="demo">SigmaLBarMean</button>
-                </div>
-
-            </div><!-- end tabs div -->
+            </div><!-- end well/sidebar-nav -->
         </div><!-- end span -->
 
         <!-- Kinome -->
