@@ -43,8 +43,6 @@ pow = Math.pow;
         }
     });
 
-    $("#tabs").tabs();
-
     // Color picker
     function hexFromRGB(r, g, b) {
         var hex = [
