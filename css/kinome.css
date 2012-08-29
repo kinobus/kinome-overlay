@@ -1,11 +1,5 @@
-#title {
-    text-align: center;
-    font-size: 80;
-    font-family: sans-serif;
-    font-weight: 700;
-    margin-top: 4px;
-    margin-bottom: 6px;
-    white-space: nowrap;
+body {
+    padding-top: 60px;
 }
 
 .pos {
@@ -36,6 +30,10 @@
     font-size: 4;
 }
 
+#kinomeDiv {
+    width: 825px;
+}
+
 #kinome {
     width: 825px;
     height: 975px;
@@ -57,6 +55,10 @@
 .data#label {
     font-family: sans-serif;
     fill: black;
+}
+
+#colorPickerTable td {
+    padding-right: 8px;
 }
 
 .label {

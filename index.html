@@ -1,93 +1,108 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+    <meta charset="utf-8">
     <title>Kinome Overlay</title>
+
+    <!-- linked styles -->
     <link href="css/custom-theme/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css" />
     <link href="css/kinome.css" rel="stylesheet" type="text/css" />
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="laktek/colorPicker.css" rel="stylesheet" />
     <link rel="icon" type="image/ico" href="kinome-overlay.ico" />
 
     <!-- Necessary JS Libraries -->
     <script src="js/jquery-1.7.2.js"></script>
     <script src="js/jquery-ui-1.8.22.custom.min.js"></script>
     <script src="js/d3.v2.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="laktek/jquery.colorPicker.js"></script>
 
     </head>
 
 <body>
-    <!-- Title -->
-    <div id="title" class="pos">
-        <h1 id="title">Kinome Overlay</h1>
+
+<!-- Navbar (tbs) -->
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="#" style="margin-left: -40px">Kinome Overlay</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li><a href="http://code.google.com/p/kinome-overlay">About</a></li>
+                    <li><a href="mailto:josephl@cs.pdx.edu,nrobin24@uw.edu">Contact</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
     </div>
+</div>
+<!-- end navbar -->
 
-    <div id="control" class="pos"><!-- Control Panel Div -->
-        <div id="tabs" style="width: 100%"><!-- tabbed ctrls -->
-            <ul>
-                <li><a href="#upload">Upload Data</a></li>
-                <li><a href="#scaling">Scaling</a></li>
-                <li><a href="#colors">Color</a></li>
-                <li><a href="#demo">Demo</a></li>
-            </ul>
-            <!-- Upload Tab -->
-            <div id="upload" class="tab">
-                <input id="csv_file" type="file" accept="text/csv" multiple"></input>
-            </div><!-- end upload -->
+<div class="container" id="control">
+    <div class="row">
 
-            <!-- Scaling -->
-            <div id="scaling" class="tab">
-                <table id="scale" class="ctrlTable">
-                    <tr>
-                        <td><strong>Slope</strong></td>
-                        <td width="200px"><div class="slider" id="slope"></div></td>
-                        <td><label id="slope"></label></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Y-intercept</strong></td>
-                        <td><div class="slider" id="yint"></div></td>
-                        <td><label id="yint"></label></td>
-                    </tr>
-                </table>
-            </div><!-- end scaling -->
+        <!-- Sidebar -->
+        <div class="span3 bs-docs-sidebar" style="margin-left: 0">
+            <div class="well sidebar-nav">
+                <ul class="nav nav-list">
 
-            <!-- Color Picker -->
-            <div id="colors" class="tab">
-                <table class="ctrlTable" id="colorTable">
-                    <tr>
-                        <th>Inhibitor</th>
-                        <th>Activator</th>
-                        <th>Opacity</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table>
+                    <!-- Upload Tab -->
+                    <li class="nav-header">Upload Data</li>
+                        <div id="upload">
+                            <input id="csv_file" type="file" accept="text/csv" multiple></input>
+                        </div><!-- end upload -->
+
+                    <!-- Scaling -->
+                    <li class="nav-header">Scaling</li>
+                        <div id="scaling">
+                            <table id="scale" class="ctrlTable">
                                 <tr>
-                                    <td><div id="red" class="inh"></div></td>
-                                    <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="inh" style="background-color: #39275b"></div></td>
+                                    <td>Coefficient</td>
+                                    <td width="200px"><div class="slider" id="slope"></div></td>
+                                    <td><label id="slope"></label></td>
                                 </tr>
                                 <tr>
-                                    <td><div id="green" class="inh"></div></td>
-                                </tr>
-                                <tr>
-                                    <td><div id="blue" class="inh"></div></td>
+                                    <td>Threshold</td>
+                                    <td><div class="slider" id="yint"></div></td>
+                                    <td><label id="yint"></label></td>
                                 </tr>
                             </table>
-                        </td>
-                        <td>
-                            <table>
+                        </div><!-- end scaling -->
+
+                    <!-- Color Picker -->
+                    <li class="nav-header">Color</li>
+                        <div id="colors">
+                            <table id="colorPickerTable">
                                 <tr>
-                                    <td><div id="red" class="act"></div></td>
-                                    <td rowspan="3" width="60px"><div class="swatch ui-widget-content ui-widget-corner-all" id="act" style="background-color: #c79900"></div></td>
+                                    <td>
+                                        <label for="inh">Inhibitor</label>
+                                    </td>
+                                    <td>
+                                        <input id="inh" name="inh" type="text" value="#39275b">
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><div id="green" class="act"></div></td>
-                                </tr>
-                                <tr>
-                                    <td><div id="blue" class="act"></div></td>
+                                    <td>
+                                        <label for="act">Activator</label>
+                                    </td>
+                                    <td>
+                                        <input id="act" name="act" type="text" value="#c79900">
+                                    </td>
                                 </tr>
                             </table>
-                        </td>
-                        <td><!-- opacity -->
+
+                            <!-- opacity -->
                             <table>
                                 <tr>
+                                    <td>
+                                        Opacity
+                                    </td>
                                     <td width="100px">
                                         <div id="opac"></div>
                                     </td>
@@ -96,37 +111,38 @@
                                     </td>
                                 </tr>
                             </table>
-                        </td><!-- end opacity -->
-                    </tr>
-                </table><!-- end color -->
+                        </div><!-- end colors tab -->
 
-            </div><!-- end colors tab -->
+                    <!-- Demo -->
+                    <li class="nav-header">Demo</li>
+                        <div id="demo">
+                            <button id="demo">siRNA Data</button>
+                        </div>
 
-            <!-- Demo -->
-            <!--
-            <div id="demo" class="tab">
-                <button id="demo">Plot Demo Data</button>
-            </div>
-            -->
-            <div id="demo" class="tab">
-                <button id="demo">SigmaLBarMean</button>
-            </div>
+                </ul>
 
-        </div><!-- end tabs div -->
-    </div><!-- end control pos -->
+            </div><!-- end well/sidebar-nav -->
+        </div><!-- end span -->
 
-    <div id="kinomeDiv" class="pos">
-        <svg id="kinome">
-            <image xlink:href="img/kinome.svg" width="825px" height="975px" style="opacity: .3"></image>
-            <g id="kinase_grp"></g>
-            <g class="data" id="grp"></g>
-        </svg>
+        <!-- Kinome -->
+        <div class="span9">
+                <div id="kinomeDiv">
+                    <svg id="kinome">
+                        <image xlink:href="img/kinome.svg" width="825px" height="975px" style="opacity: .3"></image>
+                        <g id="kinase_grp"></g>
+                        <g class="data" id="grp"></g>
+                    </svg>
+                </div>
+        </div><!-- end span/Kinome -->
+
+    </div><!-- end row -->
+
+    <div id="footer" class="row">
+        <div class="span9">
+            Copyright 2012 &copy; Joseph Lee, Nick Robin
+        </div>
     </div>
-
-
-    <div id="footer" class="pos">
-        Copyright 2012 &copy; Joseph Lee, Nick Robin
-    </div>
+</div>
 
     <script src="js/kinome-overlay.js"></script>
 

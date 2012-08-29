@@ -12,6 +12,7 @@ abs = Math.abs;
 pow = Math.pow;
 
 (function ($) {
+
     $("#slope").slider({ min: 0, max: 10, step: 1, value: 5,
         slide: function(event, ui) {
             KVM.slope = ui.value;
@@ -43,108 +44,16 @@ pow = Math.pow;
         }
     });
 
-    $("#tabs").tabs();
-
     // Color picker
-    function hexFromRGB(r, g, b) {
-        var hex = [
-            r.toString( 16 ),
-            g.toString( 16 ),
-            b.toString( 16 )
-        ];
-        $.each( hex, function( nr, val ) {
-            if ( val.length === 1 ) {
-                hex[ nr ] = "0" + val;
-            }
-        });
-        return hex.join( "" ).toUpperCase();
-    }
-    // inhibitors
-    $(".inh#red").slider({
-        orientation: "horizontal",
-        range: "min",
-        max: 255,
-        value: 57,
-        slide: function(event, ui) {
-            KVM.inhR = ui.value;
-            KVM.setColors();
-        },
-        change: function(event, ui) {
-            KVM.inhR = ui.value;
-            KVM.setColors();
-        }
+    $("#inh").colorPicker().change(function() {
+        KVM.inhColor = $(this).attr("value");
+        KVM.setColors();        
     });
-    $(".inh#green").slider({
-        orientation: "horizontal",
-        range: "min",
-        max: 255,
-        value: 39,
-        slide: function(event, ui) {
-            KVM.inhG = ui.value;
-            KVM.setColors();
-        },
-        change: function(event, ui) {
-            KVM.inhG = ui.value;
-            KVM.setColors();
-        }
+    $("#act").colorPicker().change(function() {
+        KVM.actColor = $(this).attr("value");
+        KVM.setColors();        
     });
-    $(".inh#blue").slider({
-        orientation: "horizontal",
-        range: "min",
-        max: 255,
-        value: 91,
-        slide: function(event, ui) {
-            KVM.inhB = ui.value;
-            KVM.setColors();
-        },
-        change: function(event, ui) {
-            KVM.inhB = ui.value;
-            KVM.setColors();
-        }
-    });
-    //activators
-    $(".act#red").slider({
-        orientation: "horizontal",
-        range: "min",
-        max: 255,
-        value: 199,
-        slide: function(event, ui) {
-            KVM.actR = ui.value;
-            KVM.setColors();
-        },
-        change: function(event, ui) {
-            KVM.actR = ui.value;
-            KVM.setColors();
-        }
-    });
-    $(".act#green").slider({
-        orientation: "horizontal",
-        range: "min",
-        max: 255,
-        value: 153,
-        slide: function(event, ui) {
-            KVM.actG = ui.value;
-            KVM.setColors();
-        },
-        change: function(event, ui) {
-            KVM.actG = ui.value;
-            KVM.setColors();
-        }
-    });
-    $(".act#blue").slider({
-        orientation: "horizontal",
-        range: "min",
-        max: 255,
-        value: 0,
-        slide: function(event, ui) {
-            KVM.actB = ui.value;
-            KVM.setColors();
-        },
-        change: function(event, ui) {
-            KVM.actB = ui.value;
-            KVM.setColors();
-        }
-    });
+    
 
     // Demo button
     // SigmaLBarMean Demo
@@ -208,16 +117,8 @@ pow = Math.pow;
             });
             return hex.join( "" ).toUpperCase();
         };
-        self.inhColor = function() {
-            return "#" + self.hexFromRGB(self.inhR,
-                self.inhG,
-                self.inhB);
-        };
-        self.actColor = function() {
-            return "#" + self.hexFromRGB(self.actR,
-                self.actG,
-                self.actB);
-        };
+        self.inhColor = $("#inh").attr("value");
+        self.actColor = $("#act").attr("value");
 
         // Synchronously get kinase coordinates
         self.kinases = [];
@@ -291,9 +192,9 @@ pow = Math.pow;
         // obtain approriate color for intensity
         self.getColor = function (intensity) {
             if (intensity >= 0) {
-                return self.actColor();
+                return self.actColor;
             }
-            return self.inhColor();
+            return self.inhColor;
         };
 
         // change all radii accordingly
@@ -322,8 +223,8 @@ pow = Math.pow;
                 });
 
             // set color samples
-            $("#inh").css("background-color", self.inhColor());
-            $("#act").css("background-color", self.actColor());
+            $("#inh").css("background-color", self.inhColor);
+            $("#act").css("background-color", self.actColor);
 
         };
 
