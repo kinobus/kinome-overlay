@@ -88,16 +88,10 @@ pow = Math.pow;
         self.opacLabel = $("label#opac").text(self.opac);
 
         // label visibility toggle
-        self.labelToggle = true;
+        self.labelToggle = $("#labelToggle").hasClass("active");
         self.labelToggleButton = $("#labelToggle").click(function() {
-            if ($("#labelToggle").hasClass("active") == true) {
-                self.labelToggle = false;
-                self.setRadii();
-            }
-            else {
-                self.labelToggle = true;
-                self.setRadii();
-            }
+            self.labelToggle = !($("#labelToggle").hasClass("active"));
+            self.setRadii();
         });
 
         // svg elements
