@@ -47,13 +47,12 @@ pow = Math.pow;
     // Color picker
     $("#inh").colorPicker().change(function() {
         KVM.inhColor = $(this).attr("value");
-        KVM.setColors();        
+        KVM.setColors();
     });
     $("#act").colorPicker().change(function() {
         KVM.actColor = $(this).attr("value");
-        KVM.setColors();        
+        KVM.setColors();
     });
-    
 
     // Demo button
     // SigmaLBarMean Demo
@@ -64,7 +63,6 @@ pow = Math.pow;
             KVM.applyData(demoData);
         });
     });
- 
 
     /**
      * Kinome
@@ -89,14 +87,12 @@ pow = Math.pow;
         // set opacity label
         self.opacLabel = $("label#opac").text(self.opac);
 
-        // color values
-        self.inhR = 57;
-        self.inhG = 39;
-        self.inhB = 91;
-
-        self.actR = 199;
-        self.actG = 153;
-        self.actB = 0;
+        // label visibility toggle
+        self.labelToggle = $("#labelToggle").hasClass("active");
+        self.labelToggleButton = $("#labelToggle").click(function() {
+            self.labelToggle = !($("#labelToggle").hasClass("active"));
+            self.setRadii();
+        });
 
         // svg elements
         self.svg = d3.select("#kinome");
@@ -207,6 +203,9 @@ pow = Math.pow;
             // make labels disappear when datapt radius is zero
             d3.selectAll(".data#label")
                 .attr("visibility", function(d) {
+                    if (self.labelToggle == false) {
+                        return "hidden";
+                    }
                     return self.getRadius(d.Intensity) > 0 ? "visible"
                         : "hidden";
                 });
