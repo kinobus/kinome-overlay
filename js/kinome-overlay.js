@@ -13,7 +13,7 @@ pow = Math.pow;
 
 (function ($) {
 
-    $("#slope").slider({ min: 0, max: 10, step: 1, value: 5,
+    $("#slope").slider({ min: 0, max: 20, step: 1, value: 5,
         slide: function(event, ui) {
             KVM.slope = ui.value;
             KVM.slopeLabel.text(ui.value);
@@ -181,7 +181,7 @@ pow = Math.pow;
 
         // Return radius based on intensity
         self.getRadius = function (intensity) {
-            var radius = self.slope * intensity * (pow(-1, (intensity < 0))) + self.yint;
+            var radius = self.slope * intensity * (pow(-1, (intensity < 0)));
             return radius >= 0 ? radius : 0;
         };
 
