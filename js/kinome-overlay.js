@@ -18,19 +18,13 @@ pow = Math.pow;
             KVM.slope = ui.value;
             KVM.slopeLabel.text(ui.value);
             KVM.setRadii();
-            if (KVM.force) {
-                KVM.force.resume();
-            }
         }
     });
-    $("#yint").slider({ min: -100, max: 100, step: 1, value: 0,
+    $("#thresh").slider({ min: 0, max: 0, step: .01, value: 0,
         slide: function(event, ui) {
-            KVM.yint = ui.value;
-            KVM.yintLabel.text(ui.value);
+            KVM.threshold = ui.value;
+            KVM.threshLabel.text(ui.value);
             KVM.setRadii();
-            if (KVM.force) {
-                KVM.force.resume();
-            }
         }
     });
     $("#opac").slider({ min: 0.1, max: 1, step: .1, value: .8,
@@ -75,11 +69,17 @@ pow = Math.pow;
 
         // radius scaling values
         self.slope = 5;
-        self.yint = 0;
+        self.thresh = 0;
+
+        // FoldChange threshold value
+        self.threshold = 0;
+
+        // largest magnitude (abs val fold change)
+        self.maxFoldChange = 0;
 
         // set labels for scaling factors
         self.slopeLabel = $("label#slope").text(self.slope);
-        self.yintLabel = $("label#yint").text(self.yint);
+        self.threshLabel = $("label#thresh").text(self.thresh);
 
         // opacity
         self.opac = 0.8;
@@ -199,14 +199,22 @@ pow = Math.pow;
             d3.selectAll(".data#pts")
                 .attr("r", function(d) {
                     return self.getRadius(d.Intensity);
+                })
+                .attr("visibility", function(d) {
+                    var foldChange = d.Intensity;
+                    var radius = self.getRadius(d.Intensity);
+                    return (radius > 0 && Math.abs(foldChange) > self.threshold) ? "visible"
+                        : "hidden";
                 });
-            // make labels disappear when datapt radius is zero
+            // make labels disappear when datapt radius is zero or less OR under threshold
             d3.selectAll(".data#label")
                 .attr("visibility", function(d) {
                     if (self.labelToggle == false) {
                         return "hidden";
                     }
-                    return self.getRadius(d.Intensity) > 0 ? "visible"
+                    var foldChange = d.Intensity;
+                    var radius = self.getRadius(d.Intensity);
+                    return (radius > 0 && Math.abs(foldChange) > self.threshold) ? "visible"
                         : "hidden";
                 });
         };
@@ -236,7 +244,6 @@ pow = Math.pow;
             self.userData = [];
         };
 
-
         // parse, plot user uploaded data
         // uses closure of self.userData
         // self.userData should be sufficiently parsed
@@ -258,6 +265,9 @@ pow = Math.pow;
                     }
                 }
             }
+            self.maxFoldChange = self.userData[0].Intensity;
+            // change threshold max
+            $("#thresh").slider({ max: Math.abs(self.userData[0].Intensity) });
             self.setForce();    // run force layout
         };
 
