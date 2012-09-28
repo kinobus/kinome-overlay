@@ -2,6 +2,30 @@ body {
     padding-top: 60px;
 }
 
+/* override container */
+div.container {
+    width: 1065px;
+}
+
+div.span9 {
+    width: 825px;
+}
+
+td.nameCell {
+    width: 60px;
+    overflow: hidden;
+}
+
+table.slideRow {
+    width: 220px;
+    table-layout: fixed;
+}
+
+.slideRow td.labelCell {
+    width: 25px;
+    text-align: right;
+}
+
 .pos {
     width: 825px;
     position: relative;
