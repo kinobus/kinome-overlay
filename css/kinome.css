@@ -26,6 +26,10 @@ table.slideRow {
     text-align: right;
 }
 
+.slideRow td.slideCell {
+    width: 135px;
+}
+
 .pos {
     width: 825px;
     position: relative;
