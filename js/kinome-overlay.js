@@ -7,11 +7,10 @@
  */
 
 (function ($) {
-  "use strict";
+    'use strict';
 
     /**
-     * Kinome
-     * ViewModel
+     * Kinome ViewModel
      */
     var KinomeViewModel = function() {
         var self = this;
@@ -29,39 +28,40 @@
         self.maxFoldChange = 0;
 
         // set labels for scaling factors
-        self.slopeLabel = $("label#slope").text(self.slope);
-        self.threshLabel = $("label#thresh").text(self.thresh);
+        self.slopeLabel = $('label#slope').text(self.slope);
+        self.threshLabel = $('label#thresh').text(self.thresh);
 
         // opacity
         self.opac = 0.8;
 
         // set opacity label
-        self.opacLabel = $("label#opac").text(self.opac);
+        self.opacLabel = $('label#opac').text(self.opac);
 
         // label visibility toggle
-        self.labelToggle = $("#labelToggle").hasClass("active");
-        self.labelToggleButton = $("#labelToggle").click(function() {
-            self.labelToggle = !($("#labelToggle").hasClass("active"));
+        self.labelToggle = $('#labelToggle').hasClass('active');
+        self.labelToggleButton = $('#labelToggle').click(function() {
+            self.labelToggle = !($('#labelToggle').hasClass('active'));
             self.setRadii();
         });
 
         // svg elements
-        self.svg = d3.select("#kinome");
-        self.dataGrp = d3.select(".data#grp");
+        self.svg = d3.select('#kinome');
+        self.dataGrp = d3.select('.data#grp');
 
         // Colors
-        self.inhColor = $("#inh").attr("value");
-        self.actColor = $("#act").attr("value");
+        self.inhColor = $('#inh').attr('value');
+        self.actColor = $('#act').attr('value');
 
         // Synchronously get kinase coordinates
         self.kinases = [];
         $.ajax({
             async: false,
-            dataType: "json",
-            url: "kotable.json",
+            dataType: 'json',
+            url: 'kotable.json',
             success: function(data) {
                 while(data.length > 0) {
                     var temp = data.pop();
+                    // scaling factor
                     temp.x /= 4;
                     temp.y /= 4;
                     temp.FoldChange = 0;
@@ -72,23 +72,23 @@
         });
 
         // plot static kinases endpoints
-        self.kinaseGrp = d3.select("#kinase_grp").selectAll("circle")
+        self.kinaseGrp = d3.select('#kinase_grp').selectAll('circle')
             .data(self.kinases)
             .enter()
-            .append("svg:circle")
-            .attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; })
-            .attr("r", function(d) { return 4; })
-            .attr("class", "kinase")
-            .attr("id", function(d) { return d.GeneID; });
+            .append('svg:circle')
+            .attr('cx', function(d) { return d.x; })
+            .attr('cy', function(d) { return d.y; })
+            .attr('r', function(d) { return 4; })
+            .attr('class', 'kinase')
+            .attr('id', function(d) { return d.GeneID; });
 
         /* Upload file handle */
         self.userData = [];
         self.reader = new FileReader();
 
         // Event binding on View: input file-upload
-        self.onFileUpload = $("#csv_file").change(function() {
-            var upload_file = document.getElementById("csv_file").files;
+        self.onFileUpload = $('#csv_file').change(function() {
+            var upload_file = document.getElementById('csv_file').files;
             for (var i = 0; i < upload_file.length; i++) {
                 self.reader.readAsText(upload_file[i]);
             }
@@ -99,9 +99,9 @@
         self.reader.onloadend = function(e) {
 
             // parse input data
-            var data = self.reader.result.split("\n");
+            var data = self.reader.result.split('\n');
             for (var i = 0; i < data.length; i++) {
-                data[i] = data[i].split(",");
+                data[i] = data[i].split(',');
             }
             self.applyData(data);
         };
@@ -133,26 +133,26 @@
         // change all radii accordingly
         // use radius scaling events for data points
         self.setRadii = function() {
-            d3.selectAll(".data#pts")
-                .attr("r", function(d) {
+            d3.selectAll('.data#pts')
+                .attr('r', function(d) {
                     return self.getRadius(d.FoldChange);
                 })
-                .attr("visibility", function(d) {
+                .attr('visibility', function(d) {
                     var fc = d.FoldChange;
                     var radius = self.getRadius(d.FoldChange);
-                    return (radius > 0 && Math.abs(fc) > self.threshold) ? "visible"
-                        : "hidden";
+                    return (radius > 0 && Math.abs(fc) > self.threshold) ? 'visible'
+                        : 'hidden';
                 });
             // make labels disappear when datapt radius is zero or less OR under threshold
-            d3.selectAll(".data#label")
-                .attr("visibility", function(d) {
+            d3.selectAll('.data#label')
+                .attr('visibility', function(d) {
                     if (self.labelToggle === false) {
-                        return "hidden";
+                        return 'hidden';
                     }
                     var fc = d.FoldChange;
                     var radius = self.getRadius(d.FoldChange);
-                    return (radius > 0 && Math.abs(fc) > self.threshold) ? "visible"
-                        : "hidden";
+                    return (radius > 0 && Math.abs(fc) > self.threshold) ? 'visible'
+                        : 'hidden';
                 });
         };
 
@@ -161,14 +161,14 @@
         self.setColors = function() {
 
             // set all data node colors
-            d3.selectAll(".data#pts")
-                .style("fill", function(d) {
+            d3.selectAll('.data#pts')
+                .style('fill', function(d) {
                     return self.getColor(d.FoldChange);
                 });
 
             // set color samples
-            $("#inh").css("background-color", self.inhColor);
-            $("#act").css("background-color", self.actColor);
+            $('#inh').css('background-color', self.inhColor);
+            $('#act').css('background-color', self.actColor);
 
         };
 
@@ -196,15 +196,16 @@
             while (inputData.length > 0) {
                 var temp = inputData.pop();
                 for (var i = 0; i < self.kinases.length; i++) {
-                    if (self.kinases[i].GeneID === temp[0]) {
+                    if (self.kinases[i].GeneID == temp[0]) {
                         self.kinases[i].FoldChange = temp[1];
                         self.userData.push(self.kinases[i]);
                     }
                 }
             }
+            console.log(self.kinases);
             self.maxFoldChange = self.userData[0].FoldChange;
             // change threshold max
-            $("#thresh").slider({ max: Math.abs(self.userData[0].FoldChange) });
+            $('#thresh').slider({ max: Math.abs(self.userData[0].FoldChange) });
             self.setForce();    // run force layout
         };
 
@@ -226,19 +227,19 @@
             for (var i = 0; i < self.userData.length; i++) {
                 var temp = self.userData[i];
                 self.label.nodes.push({
-                    "GeneID": temp.GeneID,
-                    "KinaseName": temp.KinaseName,
-                    "FoldChange": temp.FoldChange,
-                    "fixed": false,
-                    "x": temp.x,
-                    "y": temp.y
+                    'GeneID': temp.GeneID,
+                    'KinaseName': temp.KinaseName,
+                    'FoldChange': temp.FoldChange,
+                    'fixed': false,
+                    'x': temp.x,
+                    'y': temp.y
                 });
             }
             for (var i = 0; i < self.userData.length; i++) {
                 self.label.links.push({
-                    "source": i,
-                    "target": i + self.userData.length,
-                    "weight": 1
+                    'source': i,
+                    'target': i + self.userData.length,
+                    'weight': 1
                 });
             }
 
@@ -255,83 +256,83 @@
             // render nodes, links
             self.forces = {};
 
-            self.forces.links = self.dataGrp.selectAll("line.link")
+            self.forces.links = self.dataGrp.selectAll('line.link')
                 .data(self.force.links())
                 .enter()
-                .append("svg:line")
-                .attr("class", "link")
-                .style("stroke", "#000000")
-                .style("stroke-width", 0);
+                .append('svg:line')
+                .attr('class', 'link')
+                .style('stroke', '#000000')
+                .style('stroke-width', 0);
 
-            self.forces.nodes = self.dataGrp.selectAll("g")
+            self.forces.nodes = self.dataGrp.selectAll('g')
                 .data(self.force.nodes())
                 .enter()
-                .append("svg:g")
-                .attr("class", function (d, i) {
-                    return i <= self.userData.length - 1 ? "node"
-                        : "label";
+                .append('svg:g')
+                .attr('class', function (d, i) {
+                    return i <= self.userData.length - 1 ? 'node'
+                        : 'label';
                 })
                 // make labels disappear when datapt radius is zero
-                .attr("visibility", function (d) {
-                    return self.getRadius(d.FoldChange) > 0 ? "visible"
-                        : "hidden";
+                .attr('visibility', function (d) {
+                    return self.getRadius(d.FoldChange) > 0 ? 'visible'
+                        : 'hidden';
                 });
 
-            self.forces.nodes.append("svg:circle")
-                .attr("r", function(d, i) {
+            self.forces.nodes.append('svg:circle')
+                .attr('r', function(d, i) {
                     return i < self.userData.length ?
                         self.getRadius(d.FoldChange) : 0;
                 })
                 // only set class/id to valid circles (even)
-                .attr("class", function(d, i) {
-                    return i < self.userData.length ? "data" : "dummy";
+                .attr('class', function(d, i) {
+                    return i < self.userData.length ? 'data' : 'dummy';
                 })
-                .attr("id", function(d, i) {
-                    return i < self.userData.length ? "pts" : "dummy";
+                .attr('id', function(d, i) {
+                    return i < self.userData.length ? 'pts' : 'dummy';
                 })
-                .style("fill", function(d) {
+                .style('fill', function(d) {
                     return self.getColor(d.FoldChange);
                 })
-                .style("fill-opacity", self.opac);
+                .style('fill-opacity', self.opac);
 
-            self.forces.nodes.append("svg:text")
+            self.forces.nodes.append('svg:text')
                 .text(function(d, i) {
-                    return i < self.userData.length ? "" : d.KinaseName;
+                    return i < self.userData.length ? '' : d.KinaseName;
                 })
                 // only set class/id to valid text labels (odd)
-                .attr("class", function(d, i) {
-                    return i < self.userData.length ? "dummy" : "data";
-                }).attr("id", function(d, i) {
-                    return i < self.userData.length ? "dummy" : "label";
+                .attr('class', function(d, i) {
+                    return i < self.userData.length ? 'dummy' : 'data';
+                }).attr('id', function(d, i) {
+                    return i < self.userData.length ? 'dummy' : 'label';
                 });
 
                 // todo: fix this to work on groups only w/text
-                d3.selectAll("g.label")
+                d3.selectAll('g.label')
                 .call(self.force.drag)
-                .on("mousedown", function(d) {
+                .on('mousedown', function(d) {
                     d.fixed = true;
                 });
 
 
             self.updateLink = function() {
-                this.attr("x1", function(d) {
+                this.attr('x1', function(d) {
                     return d.source.x;
-                }).attr("y1", function(d) {
+                }).attr('y1', function(d) {
                     return d.source.y;
-                }).attr("x2", function(d) {
+                }).attr('x2', function(d) {
                     return d.target.x;
-                }).attr("y2", function(d) {
+                }).attr('y2', function(d) {
                     return d.target.y;
                 });
             };
 
             self.updateNode = function() {
-                this.attr("transform", function(d) {
-                    return "translate(" + d.x + ", " + d.y + ")";
+                this.attr('transform', function(d) {
+                    return 'translate(' + d.x + ', ' + d.y + ')';
                 });
             };
 
-            self.force.on("tick", function() {
+            self.force.on('tick', function() {
                 self.forces.links.call(self.updateLink);
                 self.forces.nodes.call(self.updateNode);
             });
@@ -342,46 +343,46 @@
     var KVM = new KinomeViewModel();
 
 
-    $("#slope").slider({ min: 0, max: 20, step: 1, value: 5,
+    $('#slope').slider({ min: 0, max: 20, step: 1, value: 5,
         slide: function(event, ui) {
             KVM.slope = ui.value;
             KVM.slopeLabel.text(ui.value);
             KVM.setRadii();
         }
     });
-    $("#thresh").slider({ min: 0, max: 0, step: 0.01, value: 0,
+    $('#thresh').slider({ min: 0, max: 0, step: 0.01, value: 0,
         slide: function(event, ui) {
             KVM.threshold = ui.value;
             KVM.threshLabel.text(ui.value);
             KVM.setRadii();
         }
     });
-    $("#opac").slider({ min: 0.1, max: 1, step: 0.1, value: 0.8,
+    $('#opac').slider({ min: 0.1, max: 1, step: 0.1, value: 0.8,
         slide: function(event, ui) {
             KVM.opac = ui.value;
             KVM.opacLabel.text(ui.value);
-            d3.selectAll(".data#pts")
-                .style("fill-opacity", function(d) {
+            d3.selectAll('.data#pts')
+                .style('fill-opacity', function(d) {
                     return ui.value;
                 });
         }
     });
 
     // Color picker
-    $("#inh").colorPicker().change(function() {
-        KVM.inhColor = $(this).attr("value");
+    $('#inh').colorPicker().change(function() {
+        KVM.inhColor = $(this).attr('value');
         KVM.setColors();
     });
-    $("#act").colorPicker().change(function() {
-        KVM.actColor = $(this).attr("value");
+    $('#act').colorPicker().change(function() {
+        KVM.actColor = $(this).attr('value');
         KVM.setColors();
     });
 
     // Demo button
     // SigmaLBarMean Demo
-    $("#demo").button();
-    $("#demo").click(function() {
-        $.getJSON("data/SigmaLBarMean.json", function(demoData) {
+    $('#demo').button();
+    $('#demo').click(function() {
+        $.getJSON('data/SigmaLBarMean.json', function(demoData) {
             KVM.clearData();
             KVM.applyData(demoData);
         });
