@@ -27,6 +27,9 @@
         // largest magnitude (abs val fold change)
         self.maxFoldChange = 0;
 
+        // determine if p-value is present in dataset
+        self.pValExist = false;
+
         // set labels for scaling factors
         self.slopeLabel = $('label#slope').text(self.slope);
         self.threshLabel = $('label#thresh').text(self.thresh);
@@ -124,10 +127,20 @@
 
         // obtain approriate color for foldChange
         self.getColor = function (foldChange) {
-            if (foldChange >= 0) {
-                return self.actColor;
+            if (self.pValExist == false) {
+                if (foldChange >= 0) {
+                    return self.actColor;
+                }
+                return self.inhColor;
             }
-            return self.inhColor;
+            else {      // p-value exists, fc is gradient
+                var scale = 0;
+                scale = Math.abs(255 * (foldChange / self.maxFoldChange));
+                scale = (scale - parseInt(scale)) < 0.5 ? parseInt(scale) : parseInt(scale) + 1;
+                console.log(scale);
+                return  foldChange > 0 ? d3.rgb(255, 255 - scale, 0).toString()
+                    : d3.rgb(255 - scale, 255, 0).toString();
+            }
         };
 
         // change all radii accordingly
@@ -193,17 +206,33 @@
                 var r = Math.abs(right[1]);
                 return l === r ? 0 : (l < r ? -1 : 1);
             });
+            // find if p-value is present in uploaded data
+            if (self.kinases[0].length == 2) {
+                self.pValExist = false;
+            }
+            else {
+                self.pValExist = true;
+            }
             while (inputData.length > 0) {
                 var temp = inputData.pop();
                 for (var i = 0; i < self.kinases.length; i++) {
                     if (self.kinases[i].GeneID == temp[0]) {
+                        // if only one column (in addition to GeneID),
+                        // interpret as Fold Change. if two columns,
+                        // interpret as fold change and p-value,
+                        // respectively
                         self.kinases[i].FoldChange = temp[1];
+                        if (self.pValExist == true) {
+                            self.kinases[i].P_Value = temp[2];
+                        }
+                        else {      // TESTING add artificial constant p-value to test foldchange interaction
+                            self.kinases[i].P_Value = 5;
+                        }
                         self.userData.push(self.kinases[i]);
                     }
                 }
             }
-            console.log(self.kinases);
-            self.maxFoldChange = self.userData[0].FoldChange;
+            self.maxFoldChange = Math.abs(self.userData[0].FoldChange);
             // change threshold max
             $('#thresh').slider({ max: Math.abs(self.userData[0].FoldChange) });
             self.setForce();    // run force layout
@@ -230,6 +259,7 @@
                     'GeneID': temp.GeneID,
                     'KinaseName': temp.KinaseName,
                     'FoldChange': temp.FoldChange,
+                    'P_Value': temp.P_Value,
                     'fixed': false,
                     'x': temp.x,
                     'y': temp.y
