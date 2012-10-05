@@ -127,7 +127,7 @@ pow = Math.pow;
                     var temp = data.pop();
                     temp.x /= 4;
                     temp.y /= 4;
-                    temp.Intensity = 0;
+                    temp.FoldChange = 0;
                     temp.fixed = true;
                     self.kinases.push(temp);
                 }
@@ -179,15 +179,15 @@ pow = Math.pow;
             return undefined;
         };
 
-        // Return radius based on intensity
-        self.getRadius = function (intensity) {
-            var radius = self.slope * intensity * (pow(-1, (intensity < 0)));
+        // Return radius based on foldChange
+        self.getRadius = function (foldChange) {
+            var radius = self.slope * foldChange * (pow(-1, (foldChange < 0)));
             return radius >= 0 ? radius : 0;
         };
 
-        // obtain approriate color for intensity
-        self.getColor = function (intensity) {
-            if (intensity >= 0) {
+        // obtain approriate color for foldChange
+        self.getColor = function (foldChange) {
+            if (foldChange >= 0) {
                 return self.actColor;
             }
             return self.inhColor;
@@ -198,12 +198,12 @@ pow = Math.pow;
         self.setRadii = function() {
             d3.selectAll(".data#pts")
                 .attr("r", function(d) {
-                    return self.getRadius(d.Intensity);
+                    return self.getRadius(d.FoldChange);
                 })
                 .attr("visibility", function(d) {
-                    var foldChange = d.Intensity;
-                    var radius = self.getRadius(d.Intensity);
-                    return (radius > 0 && Math.abs(foldChange) > self.threshold) ? "visible"
+                    var fc = d.FoldChange;
+                    var radius = self.getRadius(d.FoldChange);
+                    return (radius > 0 && Math.abs(fc) > self.threshold) ? "visible"
                         : "hidden";
                 });
             // make labels disappear when datapt radius is zero or less OR under threshold
@@ -212,9 +212,9 @@ pow = Math.pow;
                     if (self.labelToggle == false) {
                         return "hidden";
                     }
-                    var foldChange = d.Intensity;
-                    var radius = self.getRadius(d.Intensity);
-                    return (radius > 0 && Math.abs(foldChange) > self.threshold) ? "visible"
+                    var fc = d.FoldChange;
+                    var radius = self.getRadius(d.FoldChange);
+                    return (radius > 0 && Math.abs(fc) > self.threshold) ? "visible"
                         : "hidden";
                 });
         };
@@ -226,7 +226,7 @@ pow = Math.pow;
             // set all data node colors
             d3.selectAll(".data#pts")
                 .style("fill", function(d) {
-                    return self.getColor(d.Intensity);
+                    return self.getColor(d.FoldChange);
                 });
 
             // set color samples
@@ -235,11 +235,11 @@ pow = Math.pow;
 
         };
 
-        // purge all intensity data from kinases
+        // purge all foldChange data from kinases
         self.clearData = function () {
             self.userData = [];
             for (i = 0; i < self.kinases.length; i++) {
-                self.kinases[i].Intensity = 0;
+                self.kinases[i].FoldChange = 0;
             }
             self.userData = [];
         };
@@ -248,7 +248,7 @@ pow = Math.pow;
         // uses closure of self.userData
         // self.userData should be sufficiently parsed
         // to an array of 2-element arrays:
-        // [ [ GeneID, intensity-value ], ... ]
+        // [ [ GeneID, foldChange-value ], ... ]
         self.applyData = function (inputData) {
             // sort inputData so smaller radii are visible
             inputData.sort(function(left, right) {
@@ -260,14 +260,14 @@ pow = Math.pow;
                 var temp = inputData.pop();
                 for (i = 0; i < self.kinases.length; i++) {
                     if (self.kinases[i].GeneID == temp[0]) {
-                        self.kinases[i].Intensity = temp[1];
+                        self.kinases[i].FoldChange = temp[1];
                         self.userData.push(self.kinases[i]);
                     }
                 }
             }
-            self.maxFoldChange = self.userData[0].Intensity;
+            self.maxFoldChange = self.userData[0].FoldChange;
             // change threshold max
-            $("#thresh").slider({ max: Math.abs(self.userData[0].Intensity) });
+            $("#thresh").slider({ max: Math.abs(self.userData[0].FoldChange) });
             self.setForce();    // run force layout
         };
 
@@ -291,7 +291,7 @@ pow = Math.pow;
                 self.label.nodes.push({
                     "GeneID": temp.GeneID,
                     "KinaseName": temp.KinaseName,
-                    "Intensity": temp.Intensity,
+                    "FoldChange": temp.FoldChange,
                     "fixed": false,
                     "x": temp.x,
                     "y": temp.y
@@ -336,14 +336,14 @@ pow = Math.pow;
                 })
                 // make labels disappear when datapt radius is zero
                 .attr("visibility", function (d) {
-                    return self.getRadius(d.Intensity) > 0 ? "visible"
+                    return self.getRadius(d.FoldChange) > 0 ? "visible"
                         : "hidden";
                 });
 
             self.forces.nodes.append("svg:circle")
                 .attr("r", function(d, i) {
                     return i < self.userData.length ?
-                        self.getRadius(d.Intensity) : 0;
+                        self.getRadius(d.FoldChange) : 0;
                 })
                 // only set class/id to valid circles (even)
                 .attr("class", function(d, i) {
@@ -353,7 +353,7 @@ pow = Math.pow;
                     return i < self.userData.length ? "pts" : "dummy";
                 })
                 .style("fill", function(d) {
-                    return self.getColor(d.Intensity);
+                    return self.getColor(d.FoldChange);
                 })
                 .style("fill-opacity", self.opac);
 

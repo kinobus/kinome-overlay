@@ -12,12 +12,12 @@ div.span9 {
 }
 
 td.nameCell {
-    width: 60px;
+    width: 80px;
     overflow: hidden;
 }
 
 table.slideRow {
-    width: 220px;
+    width: 200px;
     table-layout: fixed;
 }
 
