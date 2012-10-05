@@ -1,4 +1,4 @@
-/* KinomeOverlay.js
+/* kinome-overlay.js
  * Copyright 2012 (c) Joseph Lee & Nick Robin
  * This software may be distributed under the MIT License
  * See file LICENSE for details
@@ -6,57 +6,8 @@
  * http://code.google.com/p/kinome-overlay
  */
 
-// Heavily used shortcut
-pF = parseFloat;
-abs = Math.abs;
-pow = Math.pow;
-
 (function ($) {
-
-    $("#slope").slider({ min: 0, max: 20, step: 1, value: 5,
-        slide: function(event, ui) {
-            KVM.slope = ui.value;
-            KVM.slopeLabel.text(ui.value);
-            KVM.setRadii();
-        }
-    });
-    $("#thresh").slider({ min: 0, max: 0, step: .01, value: 0,
-        slide: function(event, ui) {
-            KVM.threshold = ui.value;
-            KVM.threshLabel.text(ui.value);
-            KVM.setRadii();
-        }
-    });
-    $("#opac").slider({ min: 0.1, max: 1, step: .1, value: .8,
-        slide: function(event, ui) {
-            KVM.opac = ui.value;
-            KVM.opacLabel.text(ui.value);
-            d3.selectAll(".data#pts")
-                .style("fill-opacity", function(d) {
-                    return ui.value;
-                });
-        }
-    });
-
-    // Color picker
-    $("#inh").colorPicker().change(function() {
-        KVM.inhColor = $(this).attr("value");
-        KVM.setColors();
-    });
-    $("#act").colorPicker().change(function() {
-        KVM.actColor = $(this).attr("value");
-        KVM.setColors();
-    });
-
-    // Demo button
-    // SigmaLBarMean Demo
-    $("#demo").button();
-    $("#demo").click(function() {
-        $.getJSON("data/SigmaLBarMean.json", function(demoData) {
-            KVM.clearData();
-            KVM.applyData(demoData);
-        });
-    });
+  "use strict";
 
     /**
      * Kinome
@@ -98,21 +49,7 @@ pow = Math.pow;
         self.svg = d3.select("#kinome");
         self.dataGrp = d3.select(".data#grp");
 
-
-        // Color picker
-        self.hexFromRGB = function (r, g, b) {
-            var hex = [
-                r.toString( 16 ),
-                g.toString( 16 ),
-                b.toString( 16 )
-            ];
-            $.each( hex, function( nr, val ) {
-                if ( val.length === 1 ) {
-                    hex[ nr ] = "0" + val;
-                }
-            });
-            return hex.join( "" ).toUpperCase();
-        };
+        // Colors
         self.inhColor = $("#inh").attr("value");
         self.actColor = $("#act").attr("value");
 
@@ -152,7 +89,7 @@ pow = Math.pow;
         // Event binding on View: input file-upload
         self.onFileUpload = $("#csv_file").change(function() {
             var upload_file = document.getElementById("csv_file").files;
-            for (i = 0; i < upload_file.length; i++) {
+            for (var i = 0; i < upload_file.length; i++) {
                 self.reader.readAsText(upload_file[i]);
             }
         });
@@ -163,7 +100,7 @@ pow = Math.pow;
 
             // parse input data
             var data = self.reader.result.split("\n");
-            for (i = 0; i < data.length; i++) {
+            for (var i = 0; i < data.length; i++) {
                 data[i] = data[i].split(",");
             }
             self.applyData(data);
@@ -171,8 +108,8 @@ pow = Math.pow;
 
         // Return Kinase object by GeneID
         self.getKinaseById = function (geneid) {
-            for (i = 0; i < self.kinases.length; i++) {
-                if (self.kinases[i].GeneID = geneid) {
+            for (var i = 0; i < self.kinases.length; i++) {
+                if (self.kinases[i].GeneID === geneid) {
                     return self.kinases[i];
                 }
             }
@@ -181,7 +118,7 @@ pow = Math.pow;
 
         // Return radius based on foldChange
         self.getRadius = function (foldChange) {
-            var radius = self.slope * foldChange * (pow(-1, (foldChange < 0)));
+            var radius = self.slope * foldChange * (Math.pow(-1, (foldChange < 0)));
             return radius >= 0 ? radius : 0;
         };
 
@@ -209,7 +146,7 @@ pow = Math.pow;
             // make labels disappear when datapt radius is zero or less OR under threshold
             d3.selectAll(".data#label")
                 .attr("visibility", function(d) {
-                    if (self.labelToggle == false) {
+                    if (self.labelToggle === false) {
                         return "hidden";
                     }
                     var fc = d.FoldChange;
@@ -238,7 +175,7 @@ pow = Math.pow;
         // purge all foldChange data from kinases
         self.clearData = function () {
             self.userData = [];
-            for (i = 0; i < self.kinases.length; i++) {
+            for (var i = 0; i < self.kinases.length; i++) {
                 self.kinases[i].FoldChange = 0;
             }
             self.userData = [];
@@ -252,14 +189,14 @@ pow = Math.pow;
         self.applyData = function (inputData) {
             // sort inputData so smaller radii are visible
             inputData.sort(function(left, right) {
-                var l = abs(left[1]);
-                var r = abs(right[1]);
-                return l == r ? 0 : (l < r ? -1 : 1);
+                var l = Math.abs(left[1]);
+                var r = Math.abs(right[1]);
+                return l === r ? 0 : (l < r ? -1 : 1);
             });
             while (inputData.length > 0) {
                 var temp = inputData.pop();
-                for (i = 0; i < self.kinases.length; i++) {
-                    if (self.kinases[i].GeneID == temp[0]) {
+                for (var i = 0; i < self.kinases.length; i++) {
+                    if (self.kinases[i].GeneID === temp[0]) {
                         self.kinases[i].FoldChange = temp[1];
                         self.userData.push(self.kinases[i]);
                     }
@@ -282,11 +219,11 @@ pow = Math.pow;
             self.label.nodes = [];
             self.label.links = [];
             // shallow copies of userData
-            for (i = 0; i < self.userData.length; i++) {
+            for (var i = 0; i < self.userData.length; i++) {
                 self.label.nodes.push(self.userData[i]);
             }
             // label info
-            for (i = 0; i < self.userData.length; i++) {
+            for (var i = 0; i < self.userData.length; i++) {
                 var temp = self.userData[i];
                 self.label.nodes.push({
                     "GeneID": temp.GeneID,
@@ -297,7 +234,7 @@ pow = Math.pow;
                     "y": temp.y
                 });
             }
-            for (i = 0; i < self.userData.length; i++) {
+            for (var i = 0; i < self.userData.length; i++) {
                 self.label.links.push({
                     "source": i,
                     "target": i + self.userData.length,
@@ -402,6 +339,53 @@ pow = Math.pow;
         };
     };
 
-    KVM = new KinomeViewModel();
+    var KVM = new KinomeViewModel();
+
+
+    $("#slope").slider({ min: 0, max: 20, step: 1, value: 5,
+        slide: function(event, ui) {
+            KVM.slope = ui.value;
+            KVM.slopeLabel.text(ui.value);
+            KVM.setRadii();
+        }
+    });
+    $("#thresh").slider({ min: 0, max: 0, step: 0.01, value: 0,
+        slide: function(event, ui) {
+            KVM.threshold = ui.value;
+            KVM.threshLabel.text(ui.value);
+            KVM.setRadii();
+        }
+    });
+    $("#opac").slider({ min: 0.1, max: 1, step: 0.1, value: 0.8,
+        slide: function(event, ui) {
+            KVM.opac = ui.value;
+            KVM.opacLabel.text(ui.value);
+            d3.selectAll(".data#pts")
+                .style("fill-opacity", function(d) {
+                    return ui.value;
+                });
+        }
+    });
+
+    // Color picker
+    $("#inh").colorPicker().change(function() {
+        KVM.inhColor = $(this).attr("value");
+        KVM.setColors();
+    });
+    $("#act").colorPicker().change(function() {
+        KVM.actColor = $(this).attr("value");
+        KVM.setColors();
+    });
+
+    // Demo button
+    // SigmaLBarMean Demo
+    $("#demo").button();
+    $("#demo").click(function() {
+        $.getJSON("data/SigmaLBarMean.json", function(demoData) {
+            KVM.clearData();
+            KVM.applyData(demoData);
+        });
+    });
+
 
 }) (jQuery);
