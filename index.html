@@ -103,7 +103,7 @@
                             </tr>
                         </table>
 
-                        <table id="colorPickerTable" style="visibility: hidden">
+                        <table id="colorPickerTable" style="display: none">
                             <tr>
                                 <td>
                                     <label for="inh">Inhibitor</label>
@@ -130,10 +130,16 @@
                         <button id="labelToggle" type="button" class="btn active" data-toggle="button">Show Labels</button>
                     </div>
 
-                <!-- Demo -->
-                <li class="nav-header">Demo</li>
-                    <div id="demo">
-                        <button id="demo">siRNA Data</button>
+                <!-- Demo w/out p-value -->
+                <li class="nav-header">Demo (Fold Change Only)</li>
+                    <div>
+                        <button id="fc" class="demo">siRNA Data</button>
+                    </div>
+
+                <!-- Demo w/p-value -->
+                <li class="nav-header">Demo (Fold Change + P-Value)</li>
+                    <div>
+                        <button id="fc_pVal" class="demo">siRNA Data</button>
                     </div>
 
             </ul>

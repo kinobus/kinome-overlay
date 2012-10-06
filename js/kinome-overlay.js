@@ -252,7 +252,7 @@
             // find if p-value is present in uploaded data
             if (inputData[0].length <= 2) {
                 self.pValExist = false;
-                $('#colorPickerTable').css('visibility', 'visible');
+                $('#colorPickerTable').css('display', 'inline');
             }
             else {
                 self.pValExist = true;
@@ -493,13 +493,21 @@
 
     // Demo button
     // SigmaLBarMean Demo
-    $('#demo').button();
-    $('#demo').click(function() {
+    $('.demo').button();
+    $('.demo#fc').click(function() {
         $.getJSON('data/SigmaLBarMean.json', function(demoData) {
             KVM.clearData();
             KVM.applyData(demoData);
         });
     });
+    $('.demo').button();
+    $('.demo#fc_pVal').click(function() {
+        $.getJSON('data/SigmaLBarMean.json', function(demoData) {
+            KVM.clearData();
+            KVM.applyData(demoData);
+        });
+    });
+
 
 
 }) (jQuery);
