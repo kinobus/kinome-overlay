@@ -19,20 +19,22 @@
 
         // radius scaling values
         self.slope = 5;
-        self.thresh = 0;
 
         // FoldChange threshold value
-        self.threshold = 0;
+        self.threshInh = 0;
+        self.threshAct = 0;
 
-        // largest magnitude (abs val fold change)
-        self.maxFoldChange = 0;
+        // largest magnitudes (positive-max, negative-min)
+        self.minFoldChange = 0;     // for inh
+        self.maxFoldChange = 0;     // for act
 
         // determine if p-value is present in dataset
         self.pValExist = false;
 
         // set labels for scaling factors
         self.slopeLabel = $('label#slope').text(self.slope);
-        self.threshLabel = $('label#thresh').text(self.thresh);
+        self.threshInhLabel = $('label#threshInh').text(self.threshInh);
+        self.threshActLabel = $('label#threshAct').text(self.threshAct);
 
         // opacity
         self.opac = 0.8;
@@ -68,6 +70,7 @@
                     temp.x /= 4;
                     temp.y /= 4;
                     temp.FoldChange = 0;
+                    temp.P_Value = 0;
                     temp.fixed = true;
                     self.kinases.push(temp);
                 }
@@ -128,8 +131,6 @@
         // obtain approriate color for foldChange
         self.getColor = function (foldChange) {
             if (self.pValExist == false) {
-                // show color pickers
-                $('#colorPickerTable').css('visibility', 'visible');
                 if (foldChange >= 0) {
                     return self.actColor;
                 }
@@ -137,11 +138,15 @@
             }
             else {      // p-value exists, fc is gradient
                 var scale = 0;
-                scale = Math.abs(255 * (foldChange / self.maxFoldChange));
+                if (foldChange > 0) {
+                    scale = Math.abs(255 * (foldChange / self.maxFoldChange));
+                }
+                else {
+                    scale = Math.abs(255 * (foldChange / Math.abs(self.minFoldChange)));
+                }
                 scale = (scale - parseInt(scale)) < 0.5 ? parseInt(scale) : parseInt(scale) + 1;
-                console.log(scale);
-                return  foldChange > 0 ? d3.rgb(255, 255 - scale, 0).toString()
-                    : d3.rgb(255 - scale, 255, 0).toString();
+                return  foldChange > 0 ? d3.rgb(255 - scale, 255, 0).toString()
+                    : d3.rgb(255, 255 - scale, 0).toString();
             }
         };
 
@@ -155,8 +160,14 @@
                 .attr('visibility', function(d) {
                     var fc = d.FoldChange;
                     var radius = self.getRadius(d.FoldChange);
-                    return (radius > 0 && Math.abs(fc) > self.threshold) ? 'visible'
-                        : 'hidden';
+                    if (fc <= 0) {  // inhibitors
+                        return (radius > 0 && fc < self.threshInh) ? 'visible'
+                            : 'hidden';
+                    }
+                    else {  // activator
+                        return (radius > 0 && fc > self.threshAct) ? 'visible'
+                            : 'hidden';
+                    }
                 });
             // make labels disappear when datapt radius is zero or less OR under threshold
             d3.selectAll('.data#label')
@@ -166,8 +177,14 @@
                     }
                     var fc = d.FoldChange;
                     var radius = self.getRadius(d.FoldChange);
-                    return (radius > 0 && Math.abs(fc) > self.threshold) ? 'visible'
-                        : 'hidden';
+                    if (fc <= 0) {  // inhibitors
+                        return (radius > 0 && fc < self.threshInh) ? 'visible'
+                            : 'hidden';
+                    }
+                    else {  // activator
+                        return (radius > 0 && fc > self.threshAct) ? 'visible'
+                            : 'hidden';
+                    }
                 });
         };
 
@@ -211,32 +228,50 @@
             // find if p-value is present in uploaded data
             if (self.kinases[0].length == 2) {
                 self.pValExist = false;
+
             }
             else {
                 self.pValExist = true;
             }
+
+            // reset min/max of fold change values
+            self.minFoldChange = 0;
+            self.maxFoldChange = 0;
+
             while (inputData.length > 0) {
                 var temp = inputData.pop();
+                var kinase;
                 for (var i = 0; i < self.kinases.length; i++) {
-                    if (self.kinases[i].GeneID == temp[0]) {
+                    kinase = self.kinases[i];
+                    if (kinase.GeneID == temp[0]) {
                         // if only one column (in addition to GeneID),
                         // interpret as Fold Change. if two columns,
                         // interpret as fold change and p-value,
                         // respectively
-                        self.kinases[i].FoldChange = temp[1];
+                        kinase.FoldChange = temp[1];
                         if (self.pValExist == true) {
-                            self.kinases[i].P_Value = temp[2];
+                            kinase.P_Value = temp[2];
                         }
                         else {      // TESTING add artificial constant p-value to test foldchange interaction
-                            self.kinases[i].P_Value = 5;
+                            kinase.P_Value = 5;
                         }
-                        self.userData.push(self.kinases[i]);
+
+                        // add to user data
+                        self.userData.push(kinase);
+
+                        // check for min/max value
+                        if (kinase.FoldChange > self.maxFoldChange) {
+                            self.maxFoldChange = kinase.FoldChange;
+                        }
+                        else if (kinase.FoldChange < self.minFoldChange) {
+                            self.minFoldChange = kinase.FoldChange;
+                        }
                     }
                 }
             }
-            self.maxFoldChange = Math.abs(self.userData[0].FoldChange);
             // change threshold max
-            $('#thresh').slider({ max: Math.abs(self.userData[0].FoldChange) });
+            $('#threshAct').slider({ max: self.maxFoldChange });
+            $('#threshInh').slider({ max: Math.abs(self.minFoldChange) });
             self.setForce();    // run force layout
         };
 
@@ -382,10 +417,17 @@
             KVM.setRadii();
         }
     });
-    $('#thresh').slider({ min: 0, max: 0, step: 0.01, value: 0,
+    $('#threshInh').slider({ min: 0, max: 0, step: 0.01, value: 0,
         slide: function(event, ui) {
-            KVM.threshold = ui.value;
-            KVM.threshLabel.text(ui.value);
+            KVM.threshInh = ui.value * -1;
+            KVM.threshInhLabel.text(ui.value);
+            KVM.setRadii();
+        }
+    });
+    $('#threshAct').slider({ min: 0, max: 0, step: 0.01, value: 0,
+        slide: function(event, ui) {
+            KVM.threshAct = ui.value;
+            KVM.threshActLabel.text(ui.value);
             KVM.setRadii();
         }
     });
