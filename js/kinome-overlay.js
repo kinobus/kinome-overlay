@@ -31,6 +31,8 @@
         // determine if p-value is present in dataset
         self.pValExist = false;
 
+        self.pValMax = 0;
+
         // set labels for scaling factors
         self.slopeLabel = $('label#slope').text(self.slope);
         self.threshInhLabel = $('label#threshInh').text(self.threshInh);
@@ -122,10 +124,12 @@
             return undefined;
         };
 
-        // Return radius based on foldChange
-        self.getRadius = function (foldChange) {
-            var radius = self.slope * foldChange * (Math.pow(-1, (foldChange < 0)));
-            return radius >= 0 ? radius : 0;
+        // Return radius based on pValue
+        self.getRadius = function (pValue) {
+            // var radius = self.slope * pValue * (Math.pow(-1, (pValue < 0)));
+            // return radius >= 0 ? radius : 0;
+            var coeff = (5 / self.pValMax) * self.slope;
+            return Math.abs(pValue * coeff);
         };
 
         // obtain approriate color for foldChange
@@ -153,22 +157,42 @@
         // change all radii accordingly
         // use radius scaling events for data points
         self.setRadii = function() {
-            d3.selectAll('.data#pts')
-                .attr('r', function(d) {
-                    return self.getRadius(d.FoldChange);
-                })
-                .attr('visibility', function(d) {
-                    var fc = d.FoldChange;
-                    var radius = self.getRadius(d.FoldChange);
-                    if (fc <= 0) {  // inhibitors
-                        return (radius > 0 && fc < self.threshInh) ? 'visible'
-                            : 'hidden';
-                    }
-                    else {  // activator
-                        return (radius > 0 && fc > self.threshAct) ? 'visible'
-                            : 'hidden';
-                    }
-                });
+            if (self.pValExist == false) {
+                d3.selectAll('.data#pts')
+                    .attr('r', function(d) {
+                        return self.getRadius(d.FoldChange);
+                    })
+                    .attr('visibility', function(d) {
+                        var fc = d.FoldChange;
+                        var radius = self.getRadius(d.FoldChange);
+                        if (fc <= 0) {  // inhibitors
+                            return (radius > 0 && fc < self.threshInh) ? 'visible'
+                                : 'hidden';
+                        }
+                        else {  // activator
+                            return (radius > 0 && fc > self.threshAct) ? 'visible'
+                                : 'hidden';
+                        }
+                    });
+            }
+            else {
+                d3.selectAll('.data#pts')
+                    .attr('r', function(d) {
+                        return self.getRadius(d.P_Value);
+                    })
+                    .attr('visibility', function(d) {
+                        var fc = d.FoldChange;
+                        var radius = self.getRadius(d.P_Value);
+                        if (fc <= 0) {  // inhibitors
+                            return (radius > 0 && fc < self.threshInh) ? 'visible'
+                                : 'hidden';
+                        }
+                        else {  // activator
+                            return (radius > 0 && fc > self.threshAct) ? 'visible'
+                                : 'hidden';
+                        }
+                    });
+            }
             // make labels disappear when datapt radius is zero or less OR under threshold
             d3.selectAll('.data#label')
                 .attr('visibility', function(d) {
@@ -226,9 +250,9 @@
                 return l === r ? 0 : (l < r ? -1 : 1);
             });
             // find if p-value is present in uploaded data
-            if (self.kinases[0].length == 2) {
+            if (inputData[0].length <= 2) {
                 self.pValExist = false;
-
+                $('#colorPickerTable').css('visibility', 'visible');
             }
             else {
                 self.pValExist = true;
@@ -251,10 +275,14 @@
                         kinase.FoldChange = temp[1];
                         if (self.pValExist == true) {
                             kinase.P_Value = temp[2];
+                            if (kinase.P_Value > self.pValMax) {
+                                self.pValMax = kinase.P_Value;
+                            }
                         }
-                        else {      // TESTING add artificial constant p-value to test foldchange interaction
-                            kinase.P_Value = 5;
-                        }
+                        // else {      // TESTING add artificial constant p-value to test foldchange interaction
+                        //     kinase.P_Value = 5;
+                        //     self.pValMax = 5;
+                        // }
 
                         // add to user data
                         self.userData.push(kinase);
@@ -266,12 +294,20 @@
                         else if (kinase.FoldChange < self.minFoldChange) {
                             self.minFoldChange = kinase.FoldChange;
                         }
+                        break;  // assuming exclusive GeneID
                     }
                 }
             }
             // change threshold max
             $('#threshAct').slider({ max: self.maxFoldChange });
             $('#threshInh').slider({ max: Math.abs(self.minFoldChange) });
+
+            // set pValMax to largest magnitude foldChange if pValue isn't in dataset
+            if (self.pValExist == false) {
+                self.pValMax = Math.abs(self.maxFoldChange) > Math.abs(self.minFoldChange) ?
+                    self.maxFoldChange : Math.abs(self.minFoldChange);
+            }
+
             self.setForce();    // run force layout
         };
 
@@ -348,7 +384,10 @@
             self.forces.nodes.append('svg:circle')
                 .attr('r', function(d, i) {
                     return i < self.userData.length ?
-                        self.getRadius(d.FoldChange) : 0;
+                        self.pValExist ?
+                            self.getRadius(d.P_Value) :
+                            self.getRadius(d.FoldChange)
+                        : 0;
                 })
                 // only set class/id to valid circles (even)
                 .attr('class', function(d, i) {
