@@ -77,7 +77,20 @@
                 <!-- Color Picker -->
                 <li class="nav-header">Color</li>
                     <div id="colors">
-                        <table id="colorPickerTable">
+                    <!-- opacity -->
+                        <table class="slideRow">
+                            <tr>
+                                <td class="nameCell">Opacity</td>
+                                <td class="slideCell">
+                                    <div id="opac"></div>
+                                </td>
+                                <td class="labelCell">
+                                    <label id="opac"></label>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table id="colorPickerTable" style="visibility: hidden">
                             <tr>
                                 <td>
                                     <label for="inh">Inhibitor</label>
@@ -96,19 +109,7 @@
                             </tr>
                         </table>
 
-                        <!-- opacity -->
-                        <table class="slideRow">
-                            <tr>
-                                <td class="nameCell">Opacity</td>
-                                <td class="slideCell">
-                                    <div id="opac"></div>
-                                </td>
-                                <td class="labelCell">
-                                    <label id="opac"></label>
-                                </td>
-                            </tr>
-                        </table>
-                    </div><!-- end colors tab -->
+                                            </div><!-- end colors tab -->
 
                 <!-- Label toggle -->
                 <li class="nav-header">Labels</li>

@@ -128,6 +128,8 @@
         // obtain approriate color for foldChange
         self.getColor = function (foldChange) {
             if (self.pValExist == false) {
+                // show color pickers
+                $('#colorPickerTable').css('visibility', 'visible');
                 if (foldChange >= 0) {
                     return self.actColor;
                 }
