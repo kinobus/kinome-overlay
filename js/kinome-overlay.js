@@ -243,12 +243,7 @@
         // to an array of 2-element arrays:
         // [ [ GeneID, foldChange-value ], ... ]
         self.applyData = function (inputData) {
-            // sort inputData so smaller radii are visible
-            inputData.sort(function(left, right) {
-                var l = Math.abs(left[1]);
-                var r = Math.abs(right[1]);
-                return l === r ? 0 : (l < r ? -1 : 1);
-            });
+ 
             // find if p-value is present in uploaded data
             if (inputData[0].length <= 2) {
                 self.pValExist = false;
@@ -257,6 +252,16 @@
             else {
                 self.pValExist = true;
             }
+
+            // sort inputData so smaller radii are visible
+            // sort by p-value if present
+            // else sort by fold change
+            inputData.sort(function(left, right) {
+                var index = self.pValExist == true ? 2 : 1;
+                var l = Math.abs(left[index]);
+                var r = Math.abs(right[index]);
+                return l === r ? 0 : (l < r ? -1 : 1);
+            });
 
             // reset min/max of fold change values
             self.minFoldChange = 0;
