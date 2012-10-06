@@ -500,9 +500,9 @@
             KVM.applyData(demoData);
         });
     });
-    $('.demo').button();
+    //$('.demo').button();
     $('.demo#fc_pVal').click(function() {
-        $.getJSON('data/SigmaLBarMean.json', function(demoData) {
+        $.getJSON('data/SigmaLBarMeanPval.json', function(demoData) {
             KVM.clearData();
             KVM.applyData(demoData);
         });
