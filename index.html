@@ -139,6 +139,16 @@
                     <div>
                         <button id="fc_pVal" class="demo">Fold Change + P-Value</button>
                     </div>
+                <!-- end demo -->
+
+                <!-- Export Button -->
+                <li class="nav-header">Export</li>
+                    <div>
+                        <form method="POST" action="cgi-bin/kinome-export.cgi">
+                            <input type="hidden" name="session" value="420">
+                            <input type="submit" value="Export PNG">
+                        </form>
+                    </div>
 
             </ul>
 
@@ -148,7 +158,7 @@
         <div class="span9">
                 <div id="kinomeDiv">
                     <svg id="kinome">
-                        <image xlink:href="img/kinome.svg" width="825px" height="975px" style="opacity: .3"></image>
+                        <image xlink:href="img/kinome.svg" width="825px" height="975px"></image>
                         <g id="kinase_grp"></g>
                         <g class="data" id="grp"></g>
                     </svg>
