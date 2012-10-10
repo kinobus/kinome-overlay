@@ -144,10 +144,7 @@
                 <!-- Export Button -->
                 <li class="nav-header">Export</li>
                     <div>
-                        <form method="POST" action="cgi-bin/kinome-export.cgi">
-                            <input type="hidden" name="session" value="420">
-                            <input type="submit" value="Export PNG">
-                        </form>
+                        <button id="export">Export to PNG</button>
                     </div>
 
             </ul>
@@ -166,6 +163,20 @@
         </div><!-- end span/Kinome -->
 
     </div><!-- end row -->
+
+    <!-- Export image modal -->
+    <div class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>Kinome PNG</h3>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">Close</a>
+            <a href="#" class="btn btn-primary" id="saveExport">Save Image</a>
+        </div>
+    </div>
 
     <div id="footer" class="row">
         <div class="span9">

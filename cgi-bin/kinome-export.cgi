@@ -7,16 +7,16 @@ import cgi
 import subprocess
 
 def main():
-    print 'Content-Type: image/png\n'
+    print 'Content-Type: text/plain\n'
     form = cgi.FieldStorage();
 
     session = form['session'].value
 
     # convert svg to png
     subprocess.call(['convert',
-        '../img/kinome.svg',
+        '../kinome-overlay/img/kinome.svg',
         '/tmp/' + session  + '.png'])
-    img = open('/tmp/' + session + '.png', 'rb').read()
+    img = open('/tmp/' + session + '.png', 'rb').read().encode('base64').replace('\n', '')
     print img
 
 if __name__ == '__main__':
