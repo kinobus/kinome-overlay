@@ -88,7 +88,11 @@
             .attr('cy', function(d) { return d.y; })
             .attr('r', function(d) { return 4; })
             .attr('class', 'kinase')
-            .attr('id', function(d) { return d.GeneID; });
+            //.attr('id', function(d) { return d.GeneID; })
+            .style('stroke', 'black')
+            .style('stroke-width', '0.4')
+            .style('fill', 'white')
+            .style('fill-opacity', '0.5');
 
         /* Upload file handle */
         self.userData = [];
@@ -209,7 +213,8 @@
                         return (radius > 0 && fc > self.threshAct) ? 'visible'
                             : 'hidden';
                     }
-                });
+                })
+                .style('font-family', 'sans-serif');
         };
 
         // change all colors accordingly
@@ -220,7 +225,10 @@
             d3.selectAll('.data#pts')
                 .style('fill', function(d) {
                     return self.getColor(d.FoldChange);
-                });
+                })
+                .style('stroke', 'white')
+                .style('stroke-width', '1')
+                .style('stroke-opacity', '0.5');
 
             // set color samples
             $('#inh').css('background-color', self.inhColor);
@@ -524,7 +532,7 @@
                 'svgData': $('#kinomeDiv').html()
             },
             success: function(data) {
-                $('.modal-body').append('<img src="data:image/png;base64,' + data + '" />');
+                $('.modal-body').html('<img src="data:image/png;base64,' + data + '" />');
                 $('.modal').modal({
                     'show': true
                 }).css({
