@@ -515,27 +515,25 @@
     $('#export').button().click(function() {
         $.ajax({
             type: 'POST',
-            url: '../cgi-bin/kinome-export.cgi',
+            url: 'cgi-bin/kinome-export.cgi',
             data: {
                 'session': function() {
-                    return Math.floor(Math.random() * 0x1000).toString(16);
-                }
+                    var session = Math.floor(Math.random() * 0x1000).toString(16);
+                    return session;
+                },
+                'svgData': $('#kinomeDiv').html()
             },
             success: function(data) {
                 $('.modal-body').append('<img src="data:image/png;base64,' + data + '" />');
                 $('.modal').modal({
                     'show': true
                 }).css({
-                    'width': 'auto',
-                    'height': 'auto',
-                    'margin-left': function() {
-                        return -($(this).width() / 2);
-                    }
+                    'width': '360px',
+                    'margin-left': '-180px'
                 });
             }
         });
     });
-
 
 
 }) (jQuery);
