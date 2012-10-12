@@ -153,13 +153,26 @@
 
         <!-- Kinome -->
         <div class="span9">
-                <div id="kinomeDiv">
-                    <svg id="kinome">
-                        <image xlink:href="img/kinome.svg" width="825px" height="975px"></image>
-                        <g id="kinase_grp"></g>
-                        <g class="data" id="grp"></g>
-                    </svg>
-                </div>
+            <div id="kinomeDiv">
+                <svg id="kinome">
+                    <defs>
+                        <linearGradient id="inhGrad" x1="100%" y1="0%" x2="0%" y2="0%">
+                            <stop offset="0%" stop-color="#ffff00" stop-opacity="1"/>
+                            <stop offset="100%" stop-color="#ff0000" stop-opacity="1"/>
+                        </linearGradient>
+                        <linearGradient id="actGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#ffff00" stop-opacity="1"/>
+                            <stop offset="100%" stop-color="#00ff00" stop-opacity="1"/>
+                        </linearGradient>
+                    </defs>
+                    <image xlink:href="img/kinome.svg" width="825px" height="975px"></image>
+                    <g id="kinase_grp"></g>
+                    <g class="data" id="grp"></g>
+                    <g id="key">
+                        <rect x="80" y="850" width="100" height="30" style="fill:url(#inhGrad);"/>
+                    </g>
+                </svg>
+            </div>
         </div><!-- end span/Kinome -->
 
     </div><!-- end row -->
