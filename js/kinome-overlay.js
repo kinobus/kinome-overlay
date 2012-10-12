@@ -59,6 +59,10 @@
         self.inhColor = $('#inh').attr('value');
         self.actColor = $('#act').attr('value');
 
+        // key/legend group in svg
+        // see method 'keyGen'
+        self.keyGrp = d3.select('g#key');
+
         // Synchronously get kinase coordinates
         self.kinases = [];
         $.ajax({
@@ -315,6 +319,9 @@
             $('#threshAct').slider({ max: self.maxFoldChange });
             $('#threshInh').slider({ max: Math.abs(self.minFoldChange) });
 
+            // set key/legend
+            self.keyGen();
+
             // set pValMax to largest magnitude foldChange if pValue isn't in dataset
             if (self.pValExist == false) {
                 self.pValMax = Math.abs(self.maxFoldChange) > Math.abs(self.minFoldChange) ?
@@ -323,6 +330,50 @@
 
             self.setForce();    // run force layout
         };
+
+        // generate key/legend for fold change
+        self.keyGen = function() {
+            var inhWidth = Math.abs(self.minFoldChange) * 200 /
+                (Math.abs(self.minFoldChange) + self.maxFoldChange);
+
+            // key labels
+            self.keyGrp.append('svg:text')
+                .text('Fold Change')
+                .style('font-family', 'sans-serif')
+                .style('font-weight', 'bold')
+                .style('font-size', '16px')
+                .attr('x', 25)
+                .attr('y', 10);
+
+            self.keyGrp.append('svg:rect')
+                .attr('id', 'inhKey')
+                .attr('x', '25')
+                .attr('y', '20')
+                .attr('width', function() { return inhWidth; })
+                .attr('height', 20)
+                .style('fill', 'url(#inhGrad)');
+
+            self.keyGrp.append('svg:rect')
+                .attr('id', 'actKey')
+                .attr('x', function() {
+                    return (25 + inhWidth).toString();
+                })
+                .attr('y', '20')
+                .attr('width', function() {
+                    return 200 - inhWidth;
+                })
+                .attr('height', 20)
+                .style('fill', 'url(#actGrad)');
+
+            self.keyGrp.append('svg:text')
+                .text('0')
+                .attr('y', '55')
+                .attr('x', function() {
+                    return 22 + inhWidth;
+                });
+
+        }
+
 
         /**
          * LABELS USING FORCES
@@ -543,7 +594,5 @@
         });
     });
     // key/legend svg grp
-    
-
 
 }) (jQuery);
