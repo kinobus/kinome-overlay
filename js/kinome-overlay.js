@@ -365,12 +365,61 @@
                 .attr('height', 20)
                 .style('fill', 'url(#actGrad)');
 
+            // zero label
             self.keyGrp.append('svg:text')
                 .text('0')
+                .style('text-anchor', 'middle')
+                .attr('y', '55')
+                .attr('x', 25 + inhWidth);
+
+            // min label
+            self.keyGrp.append('svg:text')
+                .text(function() {
+                    if (inhWidth == 0) {
+                        return '';
+                    }
+                    if (self.minFoldChange.toFixed(2).toString().length
+                        * 5 > inhWidth) {
+                        // not enough room between left inh edge and '0'
+                        // for room for minimum label text
+                        return '';
+
+                    }
+                    else {
+                        return self.minFoldChange.toFixed(2).toString();
+                    }
+                })
+                .style('text-anchor', 'middle')
                 .attr('y', '55')
                 .attr('x', function() {
-                    return 22 + inhWidth;
+                    return 25;
                 });
+            // max label
+            self.keyGrp.append('svg:text')
+                .text(function() {
+                    if (200 - inhWidth == 0) {
+                        return '';
+                    }
+                    if (self.maxFoldChange.toFixed(2).toString().length
+                        * 5 > 200 - inhWidth) {
+                        // not enough room between right act edge and '0'
+                        // for room for minimum label text
+                        return '';
+
+                    }
+                    else {
+                        return self.maxFoldChange.toFixed(2).toString();
+                    }
+                })
+                .style('text-anchor', 'middle')
+                .attr('y', '55')
+                .attr('x', function() {
+                    return 225;
+                });
+
+
+
+
 
         }
 
@@ -520,24 +569,24 @@
             KVM.setRadii();
         }
     });
-    $('#threshInh').slider({ min: 0, max: 0, step: 0.01, value: 0,
+    $('#threshInh').slider({ min: 0, max: 0, step: 0.001, value: 0,
         slide: function(event, ui) {
             KVM.threshInh = ui.value * -1;
-            KVM.threshInhLabel.text(ui.value);
+            KVM.threshInhLabel.text(ui.value.toFixed(3));
             KVM.setRadii();
         }
     });
-    $('#threshAct').slider({ min: 0, max: 0, step: 0.01, value: 0,
+    $('#threshAct').slider({ min: 0, max: 0, step: 0.001, value: 0,
         slide: function(event, ui) {
             KVM.threshAct = ui.value;
-            KVM.threshActLabel.text(ui.value);
+            KVM.threshActLabel.text(ui.value.toFixed(3));
             KVM.setRadii();
         }
     });
     $('#opac').slider({ min: 0.1, max: 1, step: 0.1, value: 0.8,
         slide: function(event, ui) {
             KVM.opac = ui.value;
-            KVM.opacLabel.text(ui.value);
+            KVM.opacLabel.text(ui.value.toFixed(1));
             d3.selectAll('.data#pts')
                 .style('fill-opacity', function(d) {
                     return ui.value;
