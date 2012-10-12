@@ -320,7 +320,9 @@
             $('#threshInh').slider({ max: Math.abs(self.minFoldChange) });
 
             // set key/legend
-            self.keyGen();
+            if (self.pValExist == true) {
+                self.keyGen();
+            }
 
             // set pValMax to largest magnitude foldChange if pValue isn't in dataset
             if (self.pValExist == false) {
