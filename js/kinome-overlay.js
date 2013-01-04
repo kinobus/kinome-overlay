@@ -525,7 +525,8 @@
                     return i < self.userData.length ? 'dummy' : 'data';
                 }).attr('id', function(d, i) {
                     return i < self.userData.length ? 'dummy' : 'label';
-                });
+                })
+                .style('font-family', 'sans-serif');
 
                 // todo: fix this to work on groups only w/text
                 d3.selectAll('g.label')

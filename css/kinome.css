@@ -89,6 +89,10 @@ table.slideRow {
     padding-right: 8px;
 }
 
+text.data {
+    font-family: sans-serif;
+}
+
 .label {
     cursor: move;
 }
