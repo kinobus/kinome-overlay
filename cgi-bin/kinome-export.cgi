@@ -8,14 +8,16 @@ import subprocess
 import re
 
 def main():
-    print 'Content-Type: text/plain\n'
-    form = cgi.FieldStorage();
+    print 'Content-Type: application/pdf'
+    print 'Content-disposition: filename="kinome.pdf"\n'
+    form = cgi.FieldStorage()
 
     session = form['session'].value
     svgData = form['svgData'].value
     kinome_svg = '../img/kinome.svg'    # path to bg kinome svg
     png = '/tmp/' + session + '.png'
     svg = '/tmp/' + session + '.svg'
+    pdf = '/tmp/' + session + '.pdf'
 
     # modify SVG file
     # modify incoming svg data
@@ -40,14 +42,20 @@ def main():
     svgFile.close()
 
     # convert svg to png
-    subprocess.call(['convert', svg, png])
+    # subprocess.call(['convert', svg, png])
+
+    # convert svg to pdf
+    subprocess.call(['rsvg-convert', '-f', 'pdf', '-o', pdf, svg])
 
     # send generated img string
-    img_str = open(png, 'rb').read().encode('base64').replace('\n', '')
-    print img_str
+    # img_str = open(png, 'rb').read().encode('base64').replace('\n', '')
+    # print img_str
+
+    pdf_str = open(pdf, 'rb').read().encode('base64')
+    print pdf_str
 
     # clean up png
-    subprocess.call(['rm', png])
+    subprocess.call(['rm', pdf])
     subprocess.call(['rm', svg])
 
 if __name__ == '__main__':

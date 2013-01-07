@@ -635,6 +635,7 @@
                 'svgData': $('#kinomeDiv').html()
             },
             success: function(data) {
+                /*
                 $('.modal-body').html('<img src="data:image/png;base64,' + data + '" />');
                 $('.modal').modal({
                     'show': true
@@ -642,6 +643,9 @@
                     'width': '360px',
                     'margin-left': '-180px'
                 });
+                */
+                var uriContent = 'data:application/octet-stream;filename=filename.pdf;base64,' + encodeURIComponent(data);
+                var newWindow = window.open(uriContent, 'filename.pdf');
             }
         });
     });
